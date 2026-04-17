@@ -1,6 +1,15 @@
 {
   "name": "Мой Капитал",
-  "short_name": "Капитал",
+  "short_name": "Мой Капитал",
+  "description": "Мобильный финансовый коуч: капитал, долги, аналитика и план действий.",
+  "lang": "ru",
+  "dir": "ltr",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#020402",
+  "theme_color": "#020402",
+  "orientation": "portrait",
   "icons": [
     {
       "src": "./icon-192.png",
@@ -17,13 +26,7 @@
     {
       "src": "./icon-180.png",
       "sizes": "180x180",
-      "type": "image/png",
-      "purpose": "any"
+      "type": "image/png"
     }
-  ],
-  "start_url": "./",
-  "display": "standalone",
-  "background_color": "#0b0f19",
-  "theme_color": "#0b0f19",
-  "scope": "./"
+  ]
 }
