@@ -4,24 +4,36 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
     <meta name="theme-color" content="#020402" />
-    <meta name="description" content="Личный Капитал помогает сначала платить себе, учитывать доходы и расходы, снижать долговую нагрузку и растить капитал." />
+    <meta name="description" content="Финансовый коуч: плати себе первым, расти капитал, снижай долги." />
+
+    <!-- PWA. Relative paths so it also works when hosted on a GitHub Pages
+         sub-path (e.g. /repo/). -->
+    <link rel="manifest" href="manifest.webmanifest" />
+    <link rel="icon" type="image/png" href="favicon.png" />
+    <link rel="apple-touch-icon" href="icon-180.png" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <meta name="apple-mobile-web-app-title" content="Капитал" />
+    <meta name="mobile-web-app-capable" content="yes" />
+
     <title>Личный Капитал</title>
-    <link rel="manifest" href="./manifest.json" />
-    <link rel="icon" type="image/svg+xml" href="./icon.svg" />
-    <link rel="icon" type="image/png" sizes="192x192" href="./icon-192.png" />
-    <link rel="apple-touch-icon" sizes="180x180" href="./icon-180.png" />
-    <script type="module" crossorigin src="./assets/index-D_Vy1zKd.js"></script>
-    <link rel="modulepreload" crossorigin href="./assets/vendor-C-Ev5MaG.js">
-    <link rel="modulepreload" crossorigin href="./assets/vendor-state-BLlEk7sH.js">
-    <link rel="modulepreload" crossorigin href="./assets/vendor-react-CdpGtxH7.js">
-    <link rel="stylesheet" crossorigin href="./assets/index-B2XxovJe.css">
+    <script type="module" crossorigin src="./assets/index-BkZKzwWB.js"></script>
+    <link rel="modulepreload" crossorigin href="./assets/vendor-D6wooI39.js">
+    <link rel="modulepreload" crossorigin href="./assets/vendor-react-BNqjGkt2.js">
+    <link rel="modulepreload" crossorigin href="./assets/vendor-icons-BxFkUJ80.js">
+    <link rel="modulepreload" crossorigin href="./assets/vendor-state-DuJIY_xn.js">
+    <link rel="stylesheet" crossorigin href="./assets/index-CFiNtaBi.css">
   </head>
   <body>
     <div id="root"></div>
     <script>
-      if ('serviceWorker' in navigator) {
+      // Register the service worker for offline support + clean updates.
+      // Skipped on native Capacitor (assets are bundled) and where unsupported.
+      if ('serviceWorker' in navigator && !window.Capacitor && location.protocol.startsWith('http')) {
         window.addEventListener('load', () => {
-          navigator.serviceWorker.register('./sw.js', { scope: './' }).catch(() => {});
+          navigator.serviceWorker.register('sw.js').catch(() => {
+            /* offline support is best-effort; app still works without it */
+          });
         });
       }
     </script>
