@@ -10,7 +10,7 @@
  *     → fresh fetch. Old entries are purged on activate.
  *   - everything else same-origin GET: stale-while-revalidate.
  *
- * The cache name is versioned. The `1.1.3-mq5erhdd` placeholder below is
+ * The cache name is versioned. The `1.8.0-mu9ufsc2` placeholder below is
  * stamped with the package version by scripts/stamp-sw.mjs after `vite build`
  * (it stays as the literal placeholder during local dev, which still works as
  * a stable cache name). On activate we delete every cache that is not the
@@ -21,7 +21,7 @@
  * localStorage, so user data is unaffected by SW updates.
  */
 
-const VERSION = '1.1.3-mq5erhdd';
+const VERSION = '1.8.0-mu9ufsc2';
 const CACHE_NAME = `capital-shell-${VERSION}`;
 
 // Resolve URLs relative to the SW scope so the worker also functions when the
