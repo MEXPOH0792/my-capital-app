@@ -1,0 +1,123 @@
+export function buildShellProps({
+  activeTab,
+  copy,
+  theme,
+  panelStyle,
+  softPanelStyle,
+  currentSectionMeta,
+  pageTitle,
+  financeSectionLabel,
+  financeGroupLabel,
+  setActiveTab,
+}) {
+  return {
+    activeTab,
+    copy,
+    theme,
+    panelStyle,
+    softPanelStyle,
+    currentSectionMeta,
+    pageTitle,
+    financeSectionLabel,
+    financeGroupLabel,
+    setActiveTab,
+  };
+}
+
+export function buildSidebarProps({
+  isSidebarOpen,
+  setIsSidebarOpen,
+  activeTab,
+  setActiveTab,
+  primaryNavItems,
+  secondaryNavItems,
+  setupNavItems,
+  copy,
+  insightsGroupLabel,
+  financeGroupLabel,
+  theme,
+}) {
+  return {
+    isOpen: isSidebarOpen,
+    onClose: () => setIsSidebarOpen(false),
+    activeTab,
+    setActiveTab,
+    primaryNavItems,
+    secondaryNavItems,
+    setupNavItems,
+    copy,
+    insightsGroupLabel,
+    financeGroupLabel,
+    theme,
+  };
+}
+
+export function buildHeaderProps({
+  activeTab,
+  copy,
+  pageTitle,
+  financeSectionLabel,
+  isFinanceSection,
+  store,
+  setActiveTab,
+  setIsSidebarOpen,
+  panelStyle,
+  theme,
+}) {
+  return {
+    activeTab,
+    copy,
+    pageTitle,
+    financeSectionLabel,
+    isFinanceSection,
+    isDarkMode: store.isDarkMode,
+    onBackHome: () => setActiveTab('home'),
+    onOpenSidebar: () => setIsSidebarOpen(true),
+    onToggleTheme: store.toggleTheme,
+    panelStyle,
+    theme,
+  };
+}
+
+export function buildModalHostProps({
+  modalFlow,
+  isEnglish,
+  store,
+  allocationModes,
+  theme,
+  panelStyle,
+  copy,
+  formatInput,
+  softPanelStyle,
+  selectFieldStyle,
+  selectOptionStyle,
+  spendableAccounts,
+  fmt,
+  canDeleteTransaction,
+  deleteTransaction,
+  canEditTransaction,
+  canReverseTransfer,
+  reverseTransfer,
+}) {
+  return {
+    modalFlow,
+    store,
+    allocationModes,
+    isEnglish,
+    isDarkMode: store.isDarkMode,
+    theme,
+    panelStyle,
+    copy,
+    formatInput,
+    softPanelStyle,
+    selectFieldStyle,
+    selectOptionStyle,
+    spendableAccounts,
+    fmt,
+    canDeleteTransaction,
+    deleteTransaction,
+    canEditTransaction,
+    canReverseTransfer,
+    reverseTransfer,
+  };
+}

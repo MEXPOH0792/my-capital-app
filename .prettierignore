@@ -1,0 +1,13 @@
+dist
+node_modules
+android
+public/fonts
+tmp-icons
+tmp_video_frames
+tmp_video_frames_wmp
+*.log
+preview.log
+preview.out.log
+vite-dev.log
+vite-dev.err.log
+package-lock.json

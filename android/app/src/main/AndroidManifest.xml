@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <application
+        android:allowBackup="false"
+        android:icon="@mipmap/ic_launcher"
+        android:label="@string/app_name"
+        android:roundIcon="@mipmap/ic_launcher_round"
+        android:supportsRtl="true"
+        android:theme="@style/AppTheme">
+
+        <activity
+            android:configChanges="orientation|keyboardHidden|keyboard|screenSize|locale|smallestScreenSize|screenLayout|uiMode|navigation|density"
+            android:name=".MainActivity"
+            android:label="@string/title_activity_main"
+            android:theme="@style/AppTheme.NoActionBarLaunch"
+            android:launchMode="singleTask"
+            android:exported="true">
+
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+
+            <!-- Deep-link from the home-screen widget. The widget builds
+                 my-capital://widget?action=… intents and this filter routes
+                 them back into the main activity, where the JS layer reads
+                 the URL via @capacitor/app appUrlOpen. -->
+            <intent-filter android:autoVerify="false">
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data android:scheme="my-capital" android:host="widget" />
+            </intent-filter>
+
+        </activity>
+
+        <!-- Home-screen widget. No runtime permission required; the widget
+             only reads from a local SharedPreferences file mirrored by the
+             JS layer. -->
+        <receiver
+            android:name=".CapitalWidgetProvider"
+            android:label="@string/widget_label"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+            </intent-filter>
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/capital_widget_info" />
+        </receiver>
+
+        <provider
+            android:name="androidx.core.content.FileProvider"
+            android:authorities="${applicationId}.fileprovider"
+            android:exported="false"
+            android:grantUriPermissions="true">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/file_paths"></meta-data>
+        </provider>
+    </application>
+
+    <!-- Permissions -->
+    <!--
+      Personal Capital is fully offline: no network sync, no telemetry, no
+      remote fonts (see public/fonts/), no Capacitor LiveReload in release
+      builds. We deliberately do not declare android.permission.INTERNET so
+      the app cannot make outbound connections even if a third-party library
+      attempts it. If a future feature (e.g. cloud sync, push notifications)
+      requires network access, re-add the permission and update the Play
+      Console Data Safety declaration accordingly.
+    -->
+</manifest>

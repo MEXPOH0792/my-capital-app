@@ -1,0 +1,74 @@
+{
+  "name": "my-capital",
+  "private": true,
+  "version": "1.12.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "dev:mobile": "vite --host 0.0.0.0 --port 5173",
+    "build": "vite build --base ./ && node scripts/stamp-sw.mjs",
+    "preview": "vite preview --host 127.0.0.1 --port 3030",
+    "android:live": "npx cap run android -l --external",
+    "test": "tsx tests/run-tests.js",
+    "typecheck": "tsc --noEmit",
+    "verify": "npm run lint && npm run typecheck && npm test && npm run build",
+    "fonts:sync": "node scripts/fetch-fonts.mjs",
+    "icons:android": "node scripts/generate-android-icons.mjs",
+    "icons:web": "node scripts/generate-web-icons.mjs",
+    "lint": "eslint src tests scripts",
+    "lint:fix": "eslint src tests scripts --fix",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "prepare": "husky"
+  },
+  "dependencies": {
+    "@capacitor/android": "^8.3.0",
+    "@capacitor/app": "^8.1.0",
+    "@capacitor/cli": "^8.3.0",
+    "@capacitor/core": "^8.3.0",
+    "@capacitor/filesystem": "^8.1.2",
+    "@capacitor/haptics": "^8.0.2",
+    "@capacitor/share": "^8.0.1",
+    "lucide-react": "^0.542.0",
+    "react": "^19.1.1",
+    "react-dom": "^19.1.1",
+    "zustand": "^5.0.8"
+  },
+  "lint-staged": {
+    "*.{js,jsx,mjs}": [
+      "eslint --fix",
+      "prettier --write"
+    ],
+    "*.{json,css,md}": [
+      "prettier --write"
+    ]
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.39.4",
+    "@testing-library/dom": "^10.4.1",
+    "@testing-library/react": "^16.3.2",
+    "@types/node": "^25.7.0",
+    "@types/react": "^19.2.14",
+    "@types/react-dom": "^19.2.3",
+    "@vitejs/plugin-react": "^5.0.2",
+    "autoprefixer": "^10.4.21",
+    "eslint": "^9.39.4",
+    "eslint-config-prettier": "^10.1.8",
+    "eslint-plugin-import": "^2.32.0",
+    "eslint-plugin-prettier": "^5.5.5",
+    "eslint-plugin-react": "^7.37.5",
+    "eslint-plugin-react-hooks": "^7.1.1",
+    "globals": "^17.6.0",
+    "husky": "^9.1.7",
+    "jsdom": "^29.0.1",
+    "lint-staged": "^17.0.4",
+    "postcss": "^8.5.6",
+    "prettier": "^3.8.3",
+    "sharp": "^0.34.5",
+    "tailwindcss": "^3.4.17",
+    "tsx": "^4.21.0",
+    "typescript": "^6.0.3",
+    "typescript-eslint": "^8.59.3",
+    "vite": "^7.1.3"
+  }
+}

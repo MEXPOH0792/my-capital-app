@@ -16,6 +16,25 @@ Thumbs.db
 
 .vscode/
 .idea/
+*.iml
+.claude/
+.gradle-user-home/
+.notes_tmp
 
 coverage/
 *.local
+
+.eslintcache
+eslint-report.json
+android/build/
+android/app/build/
+android/.gradle/
+android/local.properties
+
+preview.log
+preview.out.log
+vite-dev.log
+vite-dev.err.log
+tmp-icons/
+tmp_video_frames/
+tmp_video_frames_wmp/

@@ -1,0 +1,10 @@
+{
+  "appId": "io.mykapital.app",
+  "appName": "Личный Капитал",
+  "webDir": "dist",
+  "plugins": {
+    "StatusBar": {
+      "overlaysWebView": true
+    }
+  }
+}

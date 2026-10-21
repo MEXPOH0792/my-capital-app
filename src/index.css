@@ -1,0 +1,198 @@
+@import url('/fonts/fonts.css');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  font-family: 'Golos Text', 'Segoe UI', sans-serif;
+  color-scheme: light dark;
+  --safe-top: env(safe-area-inset-top, 0px);
+  --safe-bottom: env(safe-area-inset-bottom, 0px);
+
+  /* Theme-aware surface/border tokens. Previously components hardcoded
+     white-alpha (e.g. bg-white/5, border-white/10), which is invisible on the
+     light theme's near-white surfaces. These variables flip with
+     [data-theme="light"] so the same utility works in both themes.
+     Default values here are the dark theme (app starts dark; data-theme is
+     applied on first effect). */
+  --mc-soft: rgba(255, 255, 255, 0.05);
+  --mc-soft-faint: rgba(255, 255, 255, 0.025);
+  --mc-hover: rgba(255, 255, 255, 0.06);
+  --mc-border: rgba(255, 255, 255, 0.1);
+  --mc-border-soft: rgba(255, 255, 255, 0.05);
+  --mc-knob: rgba(255, 255, 255, 0.55);
+  --mc-text-dim: rgba(230, 242, 235, 0.8);
+
+  /* Semantic accents. Light-theme values are darker on purpose: the 400-level
+     shades that read well on a near-black surface wash out on white, where
+     they drop to roughly 2:1 contrast. */
+  --mc-positive: #34d399;
+  --mc-negative: #f87171;
+  --mc-warning: #fbbf24;
+  --mc-focus: #34d399;
+}
+
+:root[data-theme='light'] {
+  --mc-soft: rgba(18, 41, 26, 0.05);
+  --mc-soft-faint: rgba(18, 41, 26, 0.03);
+  --mc-hover: rgba(18, 41, 26, 0.06);
+  --mc-border: rgba(18, 41, 26, 0.12);
+  --mc-border-soft: rgba(18, 41, 26, 0.07);
+  --mc-knob: rgba(18, 41, 26, 0.35);
+  --mc-text-dim: rgba(18, 41, 26, 0.78);
+  --mc-positive: #059669;
+  --mc-negative: #dc2626;
+  --mc-warning: #b45309;
+  --mc-focus: #047857;
+}
+
+html,
+body,
+#root {
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  background-color: #020402;
+  color: #e6f2eb;
+}
+
+body {
+  overflow: hidden;
+  font-family: 'Golos Text', 'Segoe UI', sans-serif;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  background-color: #020402;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+button,
+input,
+textarea,
+select {
+  font: inherit;
+}
+
+input[type='number'] {
+  -moz-appearance: textfield;
+}
+
+input[type='number']::-webkit-outer-spin-button,
+input[type='number']::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+.font-ui {
+  font-family: 'Golos Text', 'Segoe UI', sans-serif;
+}
+
+.font-display {
+  font-family: 'Manrope', 'Golos Text', 'Segoe UI', sans-serif;
+  letter-spacing: -0.025em;
+  line-height: 1.05;
+}
+
+.font-numbers {
+  font-family: 'Manrope', 'Golos Text', 'Segoe UI', sans-serif;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -0.025em;
+}
+
+.scrollbar-hide {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}
+
+.safe-bottom {
+  padding-bottom: var(--safe-bottom);
+}
+
+.safe-top {
+  padding-top: var(--safe-top);
+}
+
+@keyframes mc-skeleton-shimmer {
+  0% {
+    background-position: 100% 0;
+  }
+  100% {
+    background-position: -100% 0;
+  }
+}
+
+@keyframes mc-sheet-slide-in {
+  from {
+    transform: translateY(110%);
+  }
+  to {
+    transform: translateY(0);
+  }
+}
+
+@keyframes mc-sheet-pop-in {
+  from {
+    transform: scale(0.94);
+    opacity: 0;
+  }
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+.mc-sheet-slide {
+  animation: mc-sheet-slide-in 240ms cubic-bezier(0.32, 0.72, 0.36, 1);
+}
+
+.mc-sheet-pop {
+  animation: mc-sheet-pop-in 180ms cubic-bezier(0.32, 0.72, 0.36, 1);
+}
+
+@keyframes mc-tab-fade-in {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.mc-tab-page {
+  animation: mc-tab-fade-in 200ms cubic-bezier(0.32, 0.72, 0.36, 1);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  /* Disable shimmer for users with motion sensitivity. */
+  * {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+  }
+}
+
+/* Keyboard focus. Inputs across the app carry Tailwind's `outline-none`, which
+   left keyboard and switch users with no indication of where they were. A
+   :focus-visible rule outranks that utility class, and it never fires for
+   pointer taps, so the visual stays clean for touch. */
+:focus-visible {
+  outline: 2px solid var(--mc-focus);
+  outline-offset: 2px;
+}
+
+/* Progress and share bars. They are driven by live numbers — a limit bar grows
+   while the amount is being typed — so they ease instead of snapping. The
+   reduced-motion block above already neutralises this for anyone who asks. */
+.mc-bar {
+  transition: width 320ms cubic-bezier(0.32, 0.72, 0.36, 1);
+}

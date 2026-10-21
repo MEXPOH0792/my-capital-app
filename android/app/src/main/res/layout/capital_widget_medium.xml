@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/widget_root"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="12dp"
+    android:background="@drawable/widget_background">
+
+    <TextView
+        android:id="@+id/widget_app_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Личный Капитал"
+        android:textAllCaps="true"
+        android:textColor="#42B741"
+        android:textSize="9sp"
+        android:letterSpacing="0.18"
+        android:fontFamily="sans-serif-black"
+        android:textStyle="bold"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:orientation="vertical"
+        android:layout_marginTop="6dp">
+
+        <TextView
+            android:id="@+id/widget_available_label"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Доступно"
+            android:textAllCaps="true"
+            android:textColor="#9FC3A9"
+            android:textSize="8sp"
+            android:letterSpacing="0.14"/>
+
+        <TextView
+            android:id="@+id/widget_available_value"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="—"
+            android:textColor="#E6F2EB"
+            android:textSize="22sp"
+            android:fontFamily="sans-serif-black"
+            android:textStyle="bold"
+            android:singleLine="true"
+            android:ellipsize="end"/>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginTop="4dp">
+
+            <TextView
+                android:id="@+id/widget_capital_label"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Капитал"
+                android:textAllCaps="true"
+                android:textColor="#9FC3A9"
+                android:textSize="8sp"
+                android:letterSpacing="0.14"
+                android:layout_marginEnd="6dp"/>
+
+            <TextView
+                android:id="@+id/widget_capital_value"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="wrap_content"
+                android:text="—"
+                android:textColor="#E6F2EB"
+                android:textSize="10sp"
+                android:textStyle="bold"
+                android:singleLine="true"
+                android:ellipsize="end"/>
+        </LinearLayout>
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginTop="8dp"
+        android:weightSum="2">
+
+        <TextView
+            android:id="@+id/widget_income_button"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="4dp"
+            android:padding="8dp"
+            android:gravity="center"
+            android:background="@drawable/widget_button_income"
+            android:text="+ Доход"
+            android:textAllCaps="true"
+            android:textColor="#FFFFFF"
+            android:textSize="10sp"
+            android:textStyle="bold"
+            android:letterSpacing="0.12"/>
+
+        <TextView
+            android:id="@+id/widget_expense_button"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="4dp"
+            android:padding="8dp"
+            android:gravity="center"
+            android:background="@drawable/widget_button_expense"
+            android:text="− Расход"
+            android:textAllCaps="true"
+            android:textColor="#FFFFFF"
+            android:textSize="10sp"
+            android:textStyle="bold"
+            android:letterSpacing="0.12"/>
+    </LinearLayout>
+</LinearLayout>

@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Личный Капитал</string>
+    <string name="title_activity_main">Личный Капитал</string>
+    <string name="package_name">io.mykapital.app</string>
+    <string name="custom_url_scheme">io.mykapital.app</string>
+    <string name="widget_description">Быстрый доступ к балансу и кнопки «Доход» / «Расход» с домашнего экрана.</string>
+    <string name="widget_label">Личный Капитал</string>
+</resources>
