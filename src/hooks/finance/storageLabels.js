@@ -1,24 +1,24 @@
 export function buildStorageLabels(isEnglish) {
   return {
-    title: isEnglish ? 'Accounts and buckets' : 'Места хранения',
-    subtitle: isEnglish ? 'Spending account and savings buckets' : 'Основной и защищённые счета',
-    liquidSplit: isEnglish ? 'Spending account' : 'Основной счёт',
+    title: isEnglish ? 'Accounts and buckets' : 'Где мои деньги',
+    subtitle: isEnglish ? 'Spending account and savings buckets' : 'Деньги на каждый день и накопления',
+    liquidSplit: isEnglish ? 'Spending account' : 'На каждый день',
     liquidHint: isEnglish
       ? 'Money for daily spending and essential bills goes here first.'
-      : 'Деньги на жизнь и обязательные сначала попадают в основной счёт.',
-    primaryFallback: isEnglish ? 'Spending account' : 'Основной счёт',
+      : 'Здесь учитываются деньги на повседневные и нужные траты.',
+    primaryFallback: isEnglish ? 'Spending account' : 'На каждый день',
     secondaryFallback: '',
-    safetyFallback: isEnglish ? 'Emergency fund' : 'Копилка: подушка',
-    capitalFallback: isEnglish ? 'Capital bucket' : 'Копилка: капитал',
-    sadakaFallback: isEnglish ? 'Sadaka charity' : 'Садака',
+    safetyFallback: isEnglish ? 'Emergency fund' : 'На случай трудностей',
+    capitalFallback: isEnglish ? 'Capital bucket' : 'Накопления на будущее',
+    sadakaFallback: isEnglish ? 'Sadaka charity' : 'Помощь другим',
     sadakaHint: isEnglish ? 'Sadaka means charity or donation.' : 'Садака — пожертвование.',
-    dedicatedPlaces: isEnglish ? 'Savings buckets' : 'Защищённые счета',
-    save: isEnglish ? 'Save accounts' : 'Сохранить места',
-    previewTitle: isEnglish ? 'Placement preview on income 50 000' : 'Пример раскладки на доходе 50 000',
-    placementTitle: isEnglish ? 'Where this income goes' : 'Куда разложить этот доход',
+    dedicatedPlaces: isEnglish ? 'Savings buckets' : 'Отложенные деньги',
+    save: isEnglish ? 'Save accounts' : 'Сохранить',
+    previewTitle: isEnglish ? 'Placement preview on income 50 000' : 'Пример: доход 50 000',
+    placementTitle: isEnglish ? 'Where this income goes' : 'На что пойдёт этот доход',
     reserveNote: isEnglish
       ? 'Essential-bill reserve stays inside the spending account.'
-      : 'Резерв под обязательные остаётся внутри основного счёта.',
-    splitTotal: isEnglish ? 'Spending account share' : 'Доля основного счёта',
+      : 'Деньги на нужные траты учитываются в сумме «На каждый день».',
+    splitTotal: isEnglish ? 'Spending account share' : 'Часть дохода на каждый день',
   };
 }

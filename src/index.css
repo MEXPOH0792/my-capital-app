@@ -172,6 +172,34 @@ input[type='number']::-webkit-inner-spin-button {
   animation: mc-tab-fade-in 200ms cubic-bezier(0.32, 0.72, 0.36, 1);
 }
 
+/* Controls stay usable with larger system text and multi-line labels. */
+button {
+  min-height: 48px;
+  white-space: normal;
+  overflow-wrap: anywhere;
+}
+
+input:not([type='checkbox']):not([type='radio']):not([type='range']),
+select,
+textarea {
+  min-height: 48px;
+  max-width: 100%;
+  font-size: 1rem;
+}
+
+@keyframes mc-sidebar-enter {
+  from {
+    transform: translateX(100%);
+  }
+  to {
+    transform: translateX(0);
+  }
+}
+
+.mc-sidebar-enter {
+  animation: mc-sidebar-enter 220ms cubic-bezier(0.32, 0.72, 0.36, 1);
+}
+
 @media (prefers-reduced-motion: reduce) {
   /* Disable shimmer for users with motion sensitivity. */
   * {

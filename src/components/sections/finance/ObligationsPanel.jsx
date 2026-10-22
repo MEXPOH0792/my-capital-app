@@ -39,7 +39,7 @@ export default function ObligationsPanel({ copy, store, theme, softPanelStyle, t
           <button
             type="button"
             onClick={addRequiredExpenseItem}
-            className="w-full rounded-[16px] bg-emerald-600 px-4 py-2 text-center text-[10px] font-semibold text-white sm:w-auto"
+            className="w-full rounded-[16px] bg-emerald-600 px-4 py-2 text-center text-sm font-semibold text-white sm:w-auto"
           >
             {copy.settings.add}
           </button>
@@ -47,7 +47,7 @@ export default function ObligationsPanel({ copy, store, theme, softPanelStyle, t
 
         <div className="space-y-2">
           {!hasItems ? (
-            <div className="py-4 text-center text-[10px] font-semibold opacity-40">{copy.settings.emptyList}</div>
+            <div className="py-4 text-center text-sm font-semibold opacity-80">{copy.settings.emptyList}</div>
           ) : (
             store.requiredExpenses.map((item) => (
               <div
@@ -56,11 +56,11 @@ export default function ObligationsPanel({ copy, store, theme, softPanelStyle, t
                 style={softPanelStyle}
               >
                 <div className="min-w-0">
-                  <p className="truncate text-[13px] font-bold">{item.title}</p>
-                  <p className="mt-0.5 text-[10px] font-semibold opacity-40">{copy.settings.requiredPayment}</p>
+                  <p className="break-words text-[13px] font-bold">{item.title}</p>
+                  <p className="mt-0.5 text-sm font-semibold opacity-80">{copy.settings.requiredPayment}</p>
                 </div>
                 <div className="flex items-center gap-3">
-                  <span className="whitespace-nowrap text-[12px] font-numbers font-black">{fmt(item.amount)}</span>
+                  <span className="whitespace-nowrap text-sm font-numbers font-black">{fmt(item.amount)}</span>
                   <button
                     type="button"
                     onClick={() => store.removeRequiredExpense(item.id)}

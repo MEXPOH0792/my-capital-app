@@ -79,7 +79,7 @@ export default function LimitsPanel({ theme, store, copy, softPanelStyle, fmt, f
                 type="button"
                 onClick={() => setForm((prev) => ({ ...prev, category }))}
                 aria-pressed={form.category === category}
-                className={`min-h-[30px] rounded-full border px-3 text-[10px] font-semibold transition-all active:scale-[0.99] ${
+                className={`min-h-[30px] rounded-full border px-3 text-sm font-semibold transition-all active:scale-[0.99] ${
                   form.category === category
                     ? 'border-emerald-500 bg-emerald-500/10 text-[var(--mc-positive)]'
                     : 'border-transparent bg-[var(--mc-soft)] opacity-70'
@@ -115,17 +115,17 @@ export default function LimitsPanel({ theme, store, copy, softPanelStyle, fmt, f
           type="button"
           onClick={submit}
           disabled={!canSubmit}
-          className="min-h-[38px] w-full rounded-[16px] bg-emerald-600 text-[11px] font-semibold text-white transition-transform active:scale-[0.99] disabled:cursor-not-allowed disabled:opacity-40"
+          className="min-h-[38px] w-full rounded-[16px] bg-emerald-600 text-sm font-semibold text-white transition-transform active:scale-[0.99] disabled:cursor-not-allowed disabled:opacity-80"
         >
           {isEnglish ? 'Set limit' : 'Поставить лимит'}
         </button>
       </SectionCard>
 
       <SectionCard theme={theme} className="space-y-2.5 p-3" tone="utility">
-        <p className="text-[10px] font-semibold opacity-55">{isEnglish ? 'This month' : 'В этом месяце'}</p>
+        <p className="text-sm font-semibold opacity-80">{isEnglish ? 'This month' : 'В этом месяце'}</p>
 
         {progress.length === 0 ? (
-          <p className="text-[11px] leading-[1.35] opacity-55">
+          <p className="text-sm leading-[1.35] opacity-80">
             {isEnglish
               ? 'No limits yet. Start with the category the report calls your main leak.'
               : 'Лимитов пока нет. Начни с категории, которую отчёт называет главной утечкой.'}
@@ -135,11 +135,9 @@ export default function LimitsPanel({ theme, store, copy, softPanelStyle, fmt, f
             {progress.map((item) => (
               <div key={item.id} className="space-y-1">
                 <div className="flex items-baseline justify-between gap-2">
-                  <p className="min-w-0 truncate text-[11px] font-semibold">{item.category}</p>
+                  <p className="min-w-0 break-words text-sm font-semibold">{item.category}</p>
                   <div className="flex shrink-0 items-center gap-2">
-                    <span
-                      className={`font-numbers text-[11px] font-extrabold tabular-nums ${STATUS_CLASS[item.status]}`}
-                    >
+                    <span className={`font-numbers text-sm font-extrabold tabular-nums ${STATUS_CLASS[item.status]}`}>
                       {fmt(item.spent)} / {fmt(item.limit)}
                     </span>
                     <button
@@ -159,7 +157,7 @@ export default function LimitsPanel({ theme, store, copy, softPanelStyle, fmt, f
                     style={{ width: `${Math.min(100, Math.max(2, item.percent))}%` }}
                   />
                 </div>
-                <p className="text-[10px] leading-[1.3] opacity-55">
+                <p className="text-sm leading-[1.3] opacity-80">
                   {item.remaining >= 0
                     ? isEnglish
                       ? `${fmt(item.remaining)} left`

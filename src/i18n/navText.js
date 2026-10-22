@@ -2,7 +2,7 @@ export const NAV_TEXT = {
   ru: {
     appTitle: 'Личный Капитал',
     menu: 'Меню',
-    backToTree: 'Назад к дереву',
+    backToTree: 'На главную',
     nav: {
       home: 'Главная',
       debts: 'Долги',

@@ -4,15 +4,15 @@ import { AllocationInput, SectionCard, SectionHeader } from '../../ui/AppUi.jsx'
 function PreviewRow({ label, value, share, theme }) {
   return (
     <div
-      className="flex items-center justify-between gap-3 rounded-[16px] border px-3 py-2"
+      className="flex flex-wrap items-center justify-between gap-3 rounded-[16px] border px-3 py-2"
       style={{ backgroundColor: theme.surface, borderColor: theme.border }}
     >
       <div className="min-w-0">
-        <p className="truncate text-[10px] font-semibold opacity-55">{label}</p>
+        <p className="break-words text-sm font-semibold opacity-80">{label}</p>
         <p className="mt-0.5 text-[13px] font-numbers font-extrabold">{value}</p>
       </div>
       {typeof share === 'number' ? (
-        <span className="shrink-0 rounded-full border border-emerald-400/20 bg-emerald-500/10 px-2 py-1 text-[10px] font-semibold text-[var(--mc-positive)]">
+        <span className="shrink-0 rounded-full border border-emerald-400/20 bg-emerald-500/10 px-2 py-1 text-sm font-semibold text-[var(--mc-positive)]">
           {share}%
         </span>
       ) : null}
@@ -44,7 +44,7 @@ export default function DistributionPanel({ copy, store, theme, softPanelStyle, 
 
   const autoDistributionDescription = isEnglish
     ? 'Before spending starts, part of income goes to savings automatically.'
-    : 'До начала трат часть дохода автоматически уходит в накопления.';
+    : 'Приложение считает, сколько отложить из дохода.';
   const advancedBasisLabel =
     store.incomeDistributionBasis === 'total_income' ? copy.settings.totalIncome : copy.settings.freeAfterRequired;
   const customMode = store.incomeDistributionMode === 'custom';
@@ -59,17 +59,17 @@ export default function DistributionPanel({ copy, store, theme, softPanelStyle, 
         <SectionHeader eyebrow={copy.settings.incomeDistribution} compact />
 
         <div
-          className="flex items-center justify-between gap-3 rounded-[16px] border px-3 py-2.5"
+          className="flex flex-wrap items-center justify-between gap-3 rounded-[16px] border px-3 py-2.5"
           style={softPanelStyle}
         >
           <div className="min-w-0">
-            <p className="text-[11px] font-black">{copy.settings.autoDistribution}</p>
-            <p className="mt-0.5 text-[10px] leading-[1.3] opacity-55">{autoDistributionDescription}</p>
+            <p className="text-sm font-black">{copy.settings.autoDistribution}</p>
+            <p className="mt-0.5 text-sm leading-[1.3] opacity-80">{autoDistributionDescription}</p>
           </div>
           <button
             type="button"
             onClick={store.toggleIncomeDistribution}
-            className={`shrink-0 rounded-full border px-3 py-1 text-[10px] font-semibold transition-all ${
+            className={`shrink-0 rounded-full border px-3 py-1 text-sm font-semibold transition-all ${
               store.incomeDistributionEnabled
                 ? 'border-emerald-500 bg-emerald-500/10 text-[var(--mc-positive)]'
                 : 'opacity-70'
@@ -83,7 +83,7 @@ export default function DistributionPanel({ copy, store, theme, softPanelStyle, 
         {store.incomeDistributionEnabled ? (
           <>
             <div className="space-y-1.5">
-              <p className="px-1 text-[10px] font-semibold opacity-55">{copy.settings.howToSave}</p>
+              <p className="px-1 text-sm font-semibold opacity-80">{copy.settings.howToSave}</p>
               <div className="grid grid-cols-1 gap-1">
                 {Object.entries(allocationModes).map(([modeKey, mode]) => {
                   const payToSelf = modeKey === 'custom' ? null : mode.allocation.safety + mode.allocation.capital;
@@ -105,11 +105,11 @@ export default function DistributionPanel({ copy, store, theme, softPanelStyle, 
                           : 'border-transparent bg-[var(--mc-soft)]'
                       }`}
                     >
-                      <div className="flex items-center justify-between gap-3">
-                        <span className="text-[12px] font-black leading-[1.2]">{mode.label}</span>
+                      <div className="flex flex-wrap items-center justify-between gap-3">
+                        <span className="text-sm font-black leading-snug">{mode.label}</span>
                         {payToSelf !== null ? (
                           <span
-                            className={`shrink-0 rounded-full border px-2 py-1 text-[10px] font-semibold ${
+                            className={`shrink-0 rounded-full border px-2 py-1 text-sm font-semibold ${
                               active
                                 ? 'border-emerald-400/30 bg-emerald-500/12 text-[var(--mc-positive)]'
                                 : 'border-[var(--mc-border)] bg-[var(--mc-soft)] opacity-70'
@@ -129,18 +129,18 @@ export default function DistributionPanel({ copy, store, theme, softPanelStyle, 
               className="rounded-[16px] border px-3 py-2.5"
               style={{ backgroundColor: theme.surfaceSoft, borderColor: theme.border }}
             >
-              <div className="flex items-start justify-between gap-3">
+              <div className="flex flex-wrap items-start justify-between gap-3">
                 <div className="min-w-0">
-                  <p className="text-[10px] font-semibold opacity-55">{copy.settings.shortSummary}</p>
-                  <p className="mt-1 text-[11px] font-bold leading-[1.3]">
+                  <p className="text-sm font-semibold opacity-80">{copy.settings.shortSummary}</p>
+                  <p className="mt-1 text-sm font-bold leading-[1.3]">
                     {currentMode.label} · {payYourselfPercent}% {copy.settings.toYou}
                   </p>
-                  <p className="mt-0.5 text-[10px] leading-[1.3] opacity-55">
+                  <p className="mt-0.5 text-sm leading-[1.3] opacity-80">
                     {copy.settings.leftForLife}: {fmt(availableForObligations)}
                   </p>
                 </div>
                 <span
-                  className={`shrink-0 rounded-full border px-2 py-1 text-[10px] font-semibold ${
+                  className={`shrink-0 rounded-full border px-2 py-1 text-sm font-semibold ${
                     obligationsDelta >= 0
                       ? 'border-emerald-400/20 bg-emerald-500/10 text-[var(--mc-positive)]'
                       : 'border-red-400/20 bg-red-500/10 text-[var(--mc-negative)]'
@@ -157,15 +157,15 @@ export default function DistributionPanel({ copy, store, theme, softPanelStyle, 
               className="rounded-[16px] border px-3 py-2.5"
               style={{ backgroundColor: theme.surfaceSoft, borderColor: theme.border }}
             >
-              <div className="flex items-center justify-between gap-3">
+              <div className="flex flex-wrap items-center justify-between gap-3">
                 <div className="min-w-0">
-                  <p className="text-[10px] font-semibold opacity-55">{copy.settings.howToCalculate}</p>
-                  <p className="mt-0.5 text-[11px] font-bold leading-[1.3]">{advancedBasisLabel}</p>
+                  <p className="text-sm font-semibold opacity-80">{copy.settings.howToCalculate}</p>
+                  <p className="mt-0.5 text-sm font-bold leading-[1.3]">{advancedBasisLabel}</p>
                 </div>
                 <button
                   type="button"
                   onClick={() => setShowAdvancedDistribution((prev) => !prev)}
-                  className="shrink-0 rounded-full border px-3 py-1 text-[10px] font-semibold transition-all"
+                  className="shrink-0 rounded-full border px-3 py-1 text-sm font-semibold transition-all"
                   style={{ borderColor: theme.border, backgroundColor: theme.surface }}
                 >
                   {showAdvancedDistribution ? copy.settings.hide : copy.settings.change}
@@ -184,11 +184,9 @@ export default function DistributionPanel({ copy, store, theme, softPanelStyle, 
                       : 'border-transparent bg-[var(--mc-soft)]'
                   }`}
                 >
-                  <div className="flex items-center justify-between gap-3">
-                    <span className="text-[12px] font-black leading-[1.35]">{copy.settings.totalIncome}</span>
-                    <span className="shrink-0 text-[10px] font-semibold opacity-55">
-                      {copy.settings.totalIncomeHint}
-                    </span>
+                  <div className="flex flex-wrap items-center justify-between gap-3">
+                    <span className="text-sm font-black leading-[1.35]">{copy.settings.totalIncome}</span>
+                    <span className="shrink-0 text-sm font-semibold opacity-80">{copy.settings.totalIncomeHint}</span>
                   </div>
                 </button>
                 <button
@@ -200,9 +198,9 @@ export default function DistributionPanel({ copy, store, theme, softPanelStyle, 
                       : 'border-transparent bg-[var(--mc-soft)]'
                   }`}
                 >
-                  <div className="flex items-center justify-between gap-3">
-                    <span className="text-[12px] font-black leading-[1.35]">{copy.settings.freeAfterRequired}</span>
-                    <span className="shrink-0 text-[10px] font-semibold opacity-55">
+                  <div className="flex flex-wrap items-center justify-between gap-3">
+                    <span className="text-sm font-black leading-[1.35]">{copy.settings.freeAfterRequired}</span>
+                    <span className="shrink-0 text-sm font-semibold opacity-80">
                       {copy.settings.freeAfterRequiredHint}
                     </span>
                   </div>
@@ -245,12 +243,12 @@ export default function DistributionPanel({ copy, store, theme, softPanelStyle, 
                   className="flex w-full items-center justify-between gap-3 text-left"
                 >
                   <div className="min-w-0">
-                    <p className="text-[10px] font-semibold opacity-55">{copy.settings.currentScheme}</p>
-                    <p className="mt-0.5 text-[10px] font-bold leading-[1.3] [overflow-wrap:anywhere]">
+                    <p className="text-sm font-semibold opacity-80">{copy.settings.currentScheme}</p>
+                    <p className="mt-0.5 text-sm font-bold leading-[1.3] [overflow-wrap:anywhere]">
                       {currentSchemeSummary}
                     </p>
                   </div>
-                  <span className="shrink-0 text-[10px] font-semibold opacity-55">{schemeToggleLabel}</span>
+                  <span className="shrink-0 text-sm font-semibold opacity-80">{schemeToggleLabel}</span>
                 </button>
                 {showSchemeDetails ? (
                   <div className="mt-2 grid grid-cols-2 gap-1.5">
@@ -286,12 +284,10 @@ export default function DistributionPanel({ copy, store, theme, softPanelStyle, 
                 className="flex w-full items-center justify-between gap-3 text-left"
               >
                 <div className="min-w-0">
-                  <p className="text-[10px] font-semibold opacity-55">{copy.settings.sampleIncome}</p>
-                  <p className="mt-0.5 text-[10px] font-bold leading-[1.3] [overflow-wrap:anywhere]">
-                    {previewSummary}
-                  </p>
+                  <p className="text-sm font-semibold opacity-80">{copy.settings.sampleIncome}</p>
+                  <p className="mt-0.5 text-sm font-bold leading-[1.3] [overflow-wrap:anywhere]">{previewSummary}</p>
                 </div>
-                <span className="shrink-0 text-[10px] font-semibold opacity-55">{previewToggleLabel}</span>
+                <span className="shrink-0 text-sm font-semibold opacity-80">{previewToggleLabel}</span>
               </button>
 
               {showPreviewDetails ? (
@@ -330,10 +326,10 @@ export default function DistributionPanel({ copy, store, theme, softPanelStyle, 
                     />
                   </div>
                   <div
-                    className="mt-2 flex items-center justify-between gap-3 rounded-[12px] border px-3 py-2"
+                    className="mt-2 flex flex-wrap items-center justify-between gap-3 rounded-[12px] border px-3 py-2"
                     style={{ borderColor: theme.border }}
                   >
-                    <span className="text-[10px] font-semibold opacity-55">{copy.settings.allocationTotal}</span>
+                    <span className="text-sm font-semibold opacity-80">{copy.settings.allocationTotal}</span>
                     <span
                       className={`shrink-0 text-sm font-black ${allocationTotal === 100 ? 'text-[var(--mc-positive)]' : 'text-[var(--mc-negative)]'}`}
                     >
@@ -341,10 +337,10 @@ export default function DistributionPanel({ copy, store, theme, softPanelStyle, 
                     </span>
                   </div>
                   <div
-                    className="mt-2 rounded-[12px] border px-3 py-2 text-[11px] leading-[1.3]"
+                    className="mt-2 rounded-[12px] border px-3 py-2 text-sm leading-[1.3]"
                     style={{ borderColor: theme.border }}
                   >
-                    <p className="text-[10px] font-semibold opacity-55">{copy.settings.obligationsLoad}</p>
+                    <p className="text-sm font-semibold opacity-80">{copy.settings.obligationsLoad}</p>
                     <p className="mt-1">
                       {copy.settings.requiredPerMonth}: {fmt(totalRequiredExpenses)}
                     </p>
@@ -364,7 +360,7 @@ export default function DistributionPanel({ copy, store, theme, softPanelStyle, 
                 type="button"
                 onClick={saveAllocationSettings}
                 disabled={allocationTotal !== 100}
-                className="w-full rounded-[16px] bg-emerald-600 py-2 text-[10px] font-semibold text-white disabled:cursor-not-allowed disabled:opacity-40"
+                className="w-full rounded-[16px] bg-emerald-600 py-2 text-sm font-semibold text-white disabled:cursor-not-allowed disabled:opacity-80"
               >
                 {copy.settings.saveDistribution}
               </button>

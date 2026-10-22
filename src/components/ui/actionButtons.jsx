@@ -1,13 +1,13 @@
 export function ActionButton({ label, icon: Icon, onClick, theme, color, compact = false }) {
   const buttonClass = compact
-    ? 'flex flex-col items-center justify-center gap-1 rounded-[16px] border px-2.5 py-2 active:scale-95 transition-all group'
+    ? 'flex min-h-[56px] min-w-0 items-center justify-center gap-2 rounded-[16px] border px-3 py-3 active:scale-95 transition-all group'
     : 'flex flex-col items-center justify-center p-6 md:p-10 rounded-[22px] md:rounded-[22px] border gap-3 md:gap-4 active:scale-95 transition-all group';
   const iconWrapClass = compact
     ? 'p-1.5 rounded-[12px] transition-all group-hover:scale-105'
     : 'p-4 rounded-3xl transition-all group-hover:scale-110';
   const labelClass = compact
-    ? 'text-[10px] font-semibold opacity-70 group-hover:opacity-100'
-    : 'text-[10px] font-semibold opacity-55 group-hover:opacity-100';
+    ? 'text-base font-semibold opacity-70 group-hover:opacity-100'
+    : 'text-base font-semibold opacity-80 group-hover:opacity-100';
 
   return (
     <button

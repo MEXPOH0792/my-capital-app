@@ -53,8 +53,8 @@ export default function SettingsPanel({ copy, store, theme, softPanelStyle, text
             style={{ backgroundColor: theme.surfaceSoft, borderColor: theme.border }}
           >
             <div className="flex items-center justify-between gap-3">
-              <p className="text-[10px] font-semibold opacity-40">{text.versionLabel}</p>
-              <p className="text-[12px] font-bold opacity-70">{APP_VERSION}</p>
+              <p className="text-sm font-semibold opacity-80">{text.versionLabel}</p>
+              <p className="text-sm font-bold opacity-70">{APP_VERSION}</p>
             </div>
           </div>
 
@@ -62,7 +62,7 @@ export default function SettingsPanel({ copy, store, theme, softPanelStyle, text
             className="rounded-[16px] border px-3 py-2.5"
             style={{ backgroundColor: theme.surfaceSoft, borderColor: theme.border }}
           >
-            <p className="text-[10px] font-semibold opacity-55">{copy.settings.language}</p>
+            <p className="text-sm font-semibold opacity-80">{copy.settings.language}</p>
             <div
               className="mt-1.5 rounded-[16px] border p-1"
               style={{ borderColor: theme.border, backgroundColor: theme.surface }}
@@ -71,7 +71,7 @@ export default function SettingsPanel({ copy, store, theme, softPanelStyle, text
                 <button
                   type="button"
                   onClick={() => store.setLanguage('ru')}
-                  className={`min-w-0 rounded-[12px] border px-2 py-1.5 text-center text-[10px] font-black leading-none transition-all active:scale-[0.99] ${store.language === 'ru' ? 'border-emerald-500 bg-emerald-500 text-white shadow-[0_8px_18px_rgba(16,185,129,0.22)]' : ''}`}
+                  className={`min-w-0 rounded-[12px] border px-2 py-1.5 text-center text-sm font-black leading-none transition-all active:scale-[0.99] ${store.language === 'ru' ? 'border-emerald-500 bg-emerald-500 text-white shadow-[0_8px_18px_rgba(16,185,129,0.22)]' : ''}`}
                   style={
                     store.language === 'ru'
                       ? undefined
@@ -83,7 +83,7 @@ export default function SettingsPanel({ copy, store, theme, softPanelStyle, text
                 <button
                   type="button"
                   onClick={() => store.setLanguage('en')}
-                  className={`min-w-0 rounded-[12px] border px-2 py-1.5 text-center text-[10px] font-black leading-none transition-all active:scale-[0.99] ${store.language === 'en' ? 'border-emerald-500 bg-emerald-500 text-white shadow-[0_8px_18px_rgba(16,185,129,0.22)]' : ''}`}
+                  className={`min-w-0 rounded-[12px] border px-2 py-1.5 text-center text-sm font-black leading-none transition-all active:scale-[0.99] ${store.language === 'en' ? 'border-emerald-500 bg-emerald-500 text-white shadow-[0_8px_18px_rgba(16,185,129,0.22)]' : ''}`}
                   style={
                     store.language === 'en'
                       ? undefined
@@ -106,10 +106,10 @@ export default function SettingsPanel({ copy, store, theme, softPanelStyle, text
               aria-expanded={isCurrencyOpen}
               className="flex w-full items-center justify-between gap-3 text-left"
             >
-              <span className="text-[10px] font-semibold opacity-55">{currencyLabel}</span>
+              <span className="text-sm font-semibold opacity-80">{currencyLabel}</span>
               <span className="flex min-w-0 items-center gap-2">
-                <span className="min-w-0 truncate text-[11px] font-bold opacity-70">{activeCurrency?.label}</span>
-                <span className="shrink-0 text-[10px] font-semibold " style={{ color: theme.accent }}>
+                <span className="min-w-0 break-words text-sm font-bold opacity-70">{activeCurrency?.label}</span>
+                <span className="shrink-0 text-sm font-semibold " style={{ color: theme.accent }}>
                   {store.currency}
                 </span>
                 <ChevronDown
@@ -131,11 +131,11 @@ export default function SettingsPanel({ copy, store, theme, softPanelStyle, text
                         store.setCurrency(item.code);
                         setIsCurrencyOpen(false);
                       }}
-                      className={`flex items-center justify-between rounded-[12px] border px-3 py-2 text-left text-[11px] font-bold transition-all active:scale-[0.99] ${isActive ? 'border-emerald-500 bg-emerald-500/10 text-[var(--mc-positive)]' : ''}`}
+                      className={`flex items-center justify-between rounded-[12px] border px-3 py-2 text-left text-sm font-bold transition-all active:scale-[0.99] ${isActive ? 'border-emerald-500 bg-emerald-500/10 text-[var(--mc-positive)]' : ''}`}
                       style={isActive ? undefined : { borderColor: theme.border, backgroundColor: theme.surface }}
                     >
-                      <span className="min-w-0 truncate">{item.label}</span>
-                      <span className="ml-3 shrink-0 text-[10px] font-semibold opacity-70">{item.code}</span>
+                      <span className="min-w-0 break-words">{item.label}</span>
+                      <span className="ml-3 shrink-0 text-sm font-semibold opacity-70">{item.code}</span>
                     </button>
                   );
                 })}
@@ -150,7 +150,7 @@ export default function SettingsPanel({ copy, store, theme, softPanelStyle, text
               aria-expanded={isBackupOpen}
               className="flex w-full items-center justify-between gap-3 text-left"
             >
-              <span className="text-[10px] font-semibold opacity-55">{copy.settings.backupTitle}</span>
+              <span className="text-sm font-semibold opacity-80">{copy.settings.backupTitle}</span>
               <ChevronDown size={14} className={`shrink-0 transition-transform ${isBackupOpen ? 'rotate-180' : ''}`} />
             </button>
             {isBackupOpen ? (
@@ -159,14 +159,14 @@ export default function SettingsPanel({ copy, store, theme, softPanelStyle, text
                   <button
                     type="button"
                     onClick={exportBackup}
-                    className="rounded-[12px] bg-emerald-600 px-4 py-2 text-[11px] font-black text-white shadow-[0_10px_24px_rgba(16,185,129,0.18)] transition-all"
+                    className="rounded-[12px] bg-emerald-600 px-4 py-2 text-sm font-black text-white shadow-[0_10px_24px_rgba(16,185,129,0.18)] transition-all"
                   >
                     {copy.settings.exportJson}
                   </button>
                   <button
                     type="button"
                     onClick={() => document.getElementById('backup-import-input')?.click()}
-                    className="rounded-[12px] border px-4 py-2 text-[11px] font-black transition-all"
+                    className="rounded-[12px] border px-4 py-2 text-sm font-black transition-all"
                     style={{ borderColor: theme.border }}
                   >
                     {copy.settings.importJson}
@@ -183,7 +183,7 @@ export default function SettingsPanel({ copy, store, theme, softPanelStyle, text
                   <button
                     type="button"
                     onClick={undoImport}
-                    className="mt-2 w-full rounded-[12px] border px-4 py-2 text-[11px] font-black transition-all"
+                    className="mt-2 w-full rounded-[12px] border px-4 py-2 text-sm font-black transition-all"
                     style={{ borderColor: theme.border }}
                   >
                     {isEnglishLocale ? 'Undo import' : 'Отменить импорт'}
@@ -193,7 +193,7 @@ export default function SettingsPanel({ copy, store, theme, softPanelStyle, text
             ) : null}
             {backupNotice ? (
               <div
-                className="mt-2 rounded-[12px] border px-3 py-2 text-[12px] leading-[1.35] opacity-70"
+                className="mt-2 rounded-[12px] border px-3 py-2 text-sm leading-[1.35] opacity-70"
                 style={softPanelStyle}
               >
                 {backupNotice}
@@ -223,9 +223,9 @@ export default function SettingsPanel({ copy, store, theme, softPanelStyle, text
               aria-expanded={isSecurityOpen}
               className="flex w-full items-center justify-between gap-3 text-left"
             >
-              <span className="text-[10px] font-semibold opacity-55">{text.securityTitle}</span>
+              <span className="text-sm font-semibold opacity-80">{text.securityTitle}</span>
               <span className="flex items-center gap-2">
-                <span className="text-[10px] font-semibold opacity-55">
+                <span className="text-sm font-semibold opacity-80">
                   {pinEnabled ? copy.settings.enabled : copy.settings.disabled}
                 </span>
                 <ChevronDown
@@ -268,24 +268,21 @@ export default function SettingsPanel({ copy, store, theme, softPanelStyle, text
                   <button
                     type="button"
                     onClick={saveSecurityPin}
-                    className="mt-2 min-h-[44px] w-full rounded-[12px] bg-emerald-600 px-4 py-2 text-[11px] font-semibold text-white shadow-xl shadow-emerald-600/20 transition-all"
+                    className="mt-2 min-h-[44px] w-full rounded-[12px] bg-emerald-600 px-4 py-2 text-sm font-semibold text-white shadow-xl shadow-emerald-600/20 transition-all"
                   >
                     {text.savePin}
                   </button>
                 </>
               ) : (
                 <>
-                  <div
-                    className="mt-2 rounded-[12px] border px-3 py-2 text-[12px] leading-[1.35]"
-                    style={softPanelStyle}
-                  >
+                  <div className="mt-2 rounded-[12px] border px-3 py-2 text-sm leading-[1.35]" style={softPanelStyle}>
                     {text.pinEnabledNotice}
                   </div>
                   <div className="mt-2 grid grid-cols-1 gap-2 sm:grid-cols-2">
                     <button
                       type="button"
                       onClick={lockAppNow}
-                      className="rounded-[12px] border px-4 py-2 text-[11px] font-black transition-all"
+                      className="rounded-[12px] border px-4 py-2 text-sm font-black transition-all"
                       style={{ borderColor: theme.border }}
                     >
                       {text.lockNow}
@@ -293,13 +290,13 @@ export default function SettingsPanel({ copy, store, theme, softPanelStyle, text
                     <button
                       type="button"
                       onClick={clearSecurityPin}
-                      className="rounded-[12px] border border-red-500/20 bg-red-500/5 px-4 py-2 text-[11px] font-black text-[var(--mc-negative)] transition-all"
+                      className="rounded-[12px] border border-red-500/20 bg-red-500/5 px-4 py-2 text-sm font-black text-[var(--mc-negative)] transition-all"
                     >
                       {text.removePin}
                     </button>
                   </div>
 
-                  <label className="mt-2 flex items-center justify-between gap-3 text-[12px] font-semibold">
+                  <label className="mt-2 flex items-center justify-between gap-3 text-sm font-semibold">
                     <span>
                       {isEnglishLocale ? 'Lock after leaving the app' : 'Блокировать после выхода из приложения'}
                     </span>
@@ -308,7 +305,7 @@ export default function SettingsPanel({ copy, store, theme, softPanelStyle, text
                       onChange={(event) =>
                         store.setAutoLockMinutes(event.target.value === 'never' ? null : Number(event.target.value))
                       }
-                      className="rounded-[12px] border px-2 py-1.5 text-[12px] font-bold outline-none"
+                      className="rounded-[12px] border px-2 py-1.5 text-sm font-bold outline-none"
                       style={softPanelStyle}
                     >
                       <option value="0">{isEnglishLocale ? 'Immediately' : 'Сразу'}</option>
@@ -318,7 +315,7 @@ export default function SettingsPanel({ copy, store, theme, softPanelStyle, text
                     </select>
                   </label>
 
-                  <label className="mt-2 flex items-center justify-between gap-3 text-[12px] font-semibold">
+                  <label className="mt-2 flex items-center justify-between gap-3 text-sm font-semibold">
                     <span>
                       {isEnglishLocale ? 'Show amounts on the home-screen widget' : 'Показывать суммы на виджете'}
                     </span>
@@ -334,7 +331,7 @@ export default function SettingsPanel({ copy, store, theme, softPanelStyle, text
             ) : null}
 
             {securityNotice ? (
-              <div className="mt-2 rounded-[12px] border px-3 py-2 text-[12px] leading-[1.35]" style={softPanelStyle}>
+              <div className="mt-2 rounded-[12px] border px-3 py-2 text-sm leading-[1.35]" style={softPanelStyle}>
                 {securityNotice}
               </div>
             ) : null}
@@ -347,7 +344,7 @@ export default function SettingsPanel({ copy, store, theme, softPanelStyle, text
               aria-expanded={isDiagnosticsOpen}
               className="flex w-full items-center justify-between gap-3 text-left"
             >
-              <span className="flex items-center gap-2 text-[10px] font-semibold opacity-55">
+              <span className="flex items-center gap-2 text-sm font-semibold opacity-80">
                 <Stethoscope size={12} aria-hidden="true" />
                 {copy.settings.diagnosticsTitle}
               </span>
@@ -359,8 +356,8 @@ export default function SettingsPanel({ copy, store, theme, softPanelStyle, text
             </button>
             {isDiagnosticsOpen ? (
               <>
-                <p className="mt-2 text-[11px] leading-[1.4] opacity-70">{copy.settings.diagnosticsPrivacy}</p>
-                <p className="mt-1 text-[10px] font-semibold opacity-55">
+                <p className="mt-2 text-sm leading-[1.4] opacity-70">{copy.settings.diagnosticsPrivacy}</p>
+                <p className="mt-1 text-sm font-semibold opacity-80">
                   {copy.settings.diagnosticsErrorsCount(diagnostics.bufferedErrorsCount)}
                 </p>
                 <div className="mt-2 grid grid-cols-1 gap-2 sm:grid-cols-2">
@@ -368,7 +365,7 @@ export default function SettingsPanel({ copy, store, theme, softPanelStyle, text
                     type="button"
                     onClick={diagnostics.copyDiagnostics}
                     disabled={diagnostics.busy}
-                    className="rounded-[12px] border px-4 py-2 text-[11px] font-black transition-all disabled:cursor-not-allowed disabled:opacity-55"
+                    className="rounded-[12px] border px-4 py-2 text-sm font-black transition-all disabled:cursor-not-allowed disabled:opacity-80"
                     style={{ borderColor: theme.border }}
                   >
                     {copy.settings.diagnosticsCopy}
@@ -377,14 +374,14 @@ export default function SettingsPanel({ copy, store, theme, softPanelStyle, text
                     type="button"
                     onClick={diagnostics.shareDiagnostics}
                     disabled={diagnostics.busy}
-                    className="rounded-[12px] bg-emerald-600 px-4 py-2 text-[11px] font-black text-white shadow-[0_10px_24px_rgba(16,185,129,0.18)] transition-all disabled:cursor-not-allowed disabled:opacity-55"
+                    className="rounded-[12px] bg-emerald-600 px-4 py-2 text-sm font-black text-white shadow-[0_10px_24px_rgba(16,185,129,0.18)] transition-all disabled:cursor-not-allowed disabled:opacity-80"
                   >
                     {copy.settings.diagnosticsShare}
                   </button>
                 </div>
                 {diagnostics.notice ? (
                   <div
-                    className="mt-2 rounded-[12px] border px-3 py-2 text-[12px] leading-[1.35]"
+                    className="mt-2 rounded-[12px] border px-3 py-2 text-sm leading-[1.35]"
                     style={softPanelStyle}
                     role="status"
                     aria-live="polite"
@@ -399,13 +396,13 @@ export default function SettingsPanel({ copy, store, theme, softPanelStyle, text
       </SectionCard>
 
       <SectionCard theme={theme} tone="destructive" className="space-y-2 p-3">
-        <p className="text-[10px] font-semibold text-[var(--mc-negative)]">{text.startBaseTitle}</p>
+        <p className="text-sm font-semibold text-[var(--mc-negative)]">{text.startBaseTitle}</p>
 
         {!showResetConfirm ? (
           <button
             type="button"
             onClick={openOnboardingReconfigure}
-            className="w-full rounded-[12px] border border-red-500/20 bg-transparent px-4 py-2 text-[11px] font-black text-[var(--mc-negative)] transition-all hover:bg-red-500/5 active:scale-[0.99]"
+            className="w-full rounded-[12px] border border-red-500/20 bg-transparent px-4 py-2 text-sm font-black text-[var(--mc-negative)] transition-all hover:bg-red-500/5 active:scale-[0.99]"
           >
             {text.startBaseAction}
           </button>
@@ -414,14 +411,14 @@ export default function SettingsPanel({ copy, store, theme, softPanelStyle, text
             <button
               type="button"
               onClick={onConfirmReset}
-              className="rounded-[12px] bg-red-500 px-4 py-2 text-[11px] font-black text-white shadow-[0_10px_24px_rgba(239,68,68,0.22)] transition-transform active:scale-[0.99]"
+              className="rounded-[12px] bg-red-500 px-4 py-2 text-sm font-black text-white shadow-[0_10px_24px_rgba(239,68,68,0.22)] transition-transform active:scale-[0.99]"
             >
               {copy.settings.erase}
             </button>
             <button
               type="button"
               onClick={() => setShowResetConfirm(false)}
-              className="rounded-[12px] border px-4 py-2 text-[11px] font-black transition-all active:scale-[0.99]"
+              className="rounded-[12px] border px-4 py-2 text-sm font-black transition-all active:scale-[0.99]"
               style={{ borderColor: theme.border }}
             >
               {copy.settings.cancel}

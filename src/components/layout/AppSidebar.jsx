@@ -10,7 +10,7 @@ function NavGroup({ label, items, activeTab, setActiveTab, onClose, isItemActive
     <>
       {label ? (
         <div className="px-1.5 pt-3.5 pb-1.5">
-          <p className="text-[10px] font-semibold opacity-40">{label}</p>
+          <p className="text-sm font-semibold opacity-80">{label}</p>
         </div>
       ) : null}
 
@@ -27,12 +27,12 @@ function NavGroup({ label, items, activeTab, setActiveTab, onClose, isItemActive
             className={`w-full flex items-center justify-start gap-3 rounded-[16px] border px-4 py-3 text-left transition-all ${
               active
                 ? 'border-emerald-500/20 text-[var(--mc-positive)] shadow-[0_12px_24px_rgba(66,183,65,0.08)]'
-                : 'border-transparent hover:bg-[var(--mc-hover)] opacity-55 hover:opacity-100'
+                : 'border-transparent hover:bg-[var(--mc-hover)] opacity-80 hover:opacity-100'
             }`}
             style={{ backgroundColor: active ? `${highlightColor}10` : 'transparent' }}
           >
             <item.icon size={18} />
-            <span className="text-[10px] font-semibold leading-4">{item.navLabel}</span>
+            <span className="text-base font-semibold leading-normal">{item.navLabel}</span>
           </button>
         );
       })}
@@ -68,21 +68,21 @@ export default function AppSidebar({
         role="dialog"
         aria-modal="true"
         aria-label={copy.menu || 'Navigation'}
-        className="fixed left-0 top-0 bottom-0 z-[110] flex w-[82vw] max-w-68 flex-col overflow-hidden border-r p-4 safe-top safe-bottom md:p-6"
-        style={{ backgroundColor: theme.sidebarBg, borderColor: theme.border, boxShadow: theme.panelShadow }}
+        className="mc-sidebar-enter fixed right-0 top-0 bottom-0 z-[110] flex w-[82vw] max-w-[320px] flex-col overflow-hidden border-l p-4 safe-top safe-bottom md:p-6"
+        style={{ backgroundColor: theme.surface, borderColor: theme.border, boxShadow: theme.panelShadow }}
       >
         <div className="mb-6 flex items-center justify-between md:mb-8">
           <div className="flex items-center gap-3">
             <div className="h-8 w-8 overflow-hidden rounded-lg border border-[var(--mc-border)] bg-black/10">
               <img src={appLogo} alt="" className="w-full h-full object-cover" />
             </div>
-            <span className="font-black text-[10px] ">{copy.menu}</span>
+            <span className="font-black text-sm ">{copy.menu}</span>
           </div>
           <button
             type="button"
             onClick={onClose}
             aria-label={copy.common?.cancel || 'Close menu'}
-            className="opacity-40 hover:opacity-100 transition-opacity"
+            className="flex min-h-[48px] min-w-[48px] items-center justify-center rounded-xl opacity-80 hover:opacity-100 transition-opacity"
           >
             <X size={18} aria-hidden="true" />
           </button>
@@ -118,7 +118,7 @@ export default function AppSidebar({
         </nav>
 
         <div className="mt-auto border-t pt-5" style={{ borderColor: theme.border }}>
-          <p className="text-[10px] font-display font-semibold opacity-40 text-center">
+          <p className="text-sm font-display font-semibold opacity-80 text-center">
             {copy.appTitle} v{APP_VERSION}
           </p>
         </div>

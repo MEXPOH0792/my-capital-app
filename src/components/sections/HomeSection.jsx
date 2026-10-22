@@ -12,17 +12,17 @@ function FocusStrip({ copy, action, nextStepValue, nextStepHint, theme }) {
         <div className="rounded-full bg-emerald-500/10 p-1.5 text-[var(--mc-positive)]">
           <Target size={12} />
         </div>
-        <p className="text-[10px] font-semibold opacity-55">{copy.home.mainAction}</p>
+        <p className="text-sm font-semibold opacity-80">{copy.home.mainAction}</p>
       </div>
-      <p className="mt-1.5 text-[13px] font-display font-extrabold leading-[1.12]">{action}</p>
+      <p className="mt-1.5 text-[13px] font-display font-extrabold leading-snug">{action}</p>
       <div
-        className="mt-2 flex items-center justify-between gap-3 border-t pt-2 text-[10px]"
+        className="mt-2 flex items-center justify-between gap-3 border-t pt-2 text-sm"
         style={{ borderColor: theme.border }}
       >
-        <span className="font-semibold opacity-55">{copy.home.nextStep}</span>
+        <span className="font-semibold opacity-80">{copy.home.nextStep}</span>
         <span className="text-right font-numbers font-extrabold [overflow-wrap:anywhere]">{nextStepValue}</span>
       </div>
-      <p className="mt-0.5 text-right text-[10px] leading-[1.2] opacity-55">{nextStepHint}</p>
+      <p className="mt-0.5 text-right text-sm leading-snug opacity-80">{nextStepHint}</p>
     </div>
   );
 }
@@ -65,7 +65,35 @@ export default function HomeSection({
   const nextStepHint = goalJourney?.remainingToNext > 0 ? copy.home.nextStepHint : copy.home.goalReached;
 
   return (
-    <div className="relative -mx-3 overflow-hidden px-4 pb-3 pt-1" style={{ backgroundColor: theme.background }}>
+    <div className="relative -mx-3 px-4 pb-5 pt-2" style={{ backgroundColor: theme.background }}>
+      <div className="relative z-10 -mt-1">
+        <div className="flex flex-wrap items-start justify-between gap-3">
+          <div className="min-w-0 basis-full sm:basis-0 flex-1">
+            <p className="text-sm font-semibold opacity-80">{copy.home.availableBalance}</p>
+            <button
+              type="button"
+              aria-label={`${copy.home.availableBalance}: ${fmt(store.availableBalance)}`}
+              className="mt-1 min-w-0 cursor-pointer text-left text-[clamp(1.5rem,7vw,2.35rem)] font-numbers font-extrabold leading-tight tracking-tighter transition-transform active:scale-95 [overflow-wrap:anywhere]"
+              onClick={onEditBalance}
+            >
+              {fmt(store.availableBalance)}
+            </button>
+            <div className="mt-1.5 flex items-start gap-1.5 text-sm leading-snug opacity-70">
+              <Sprout size={12} className="mt-0.5 shrink-0 text-[var(--mc-positive)]" />
+              <span>{treeStatus}</span>
+            </div>
+          </div>
+
+          <div
+            className="max-w-full rounded-2xl border px-3 py-2 text-left"
+            style={{ backgroundColor: theme.surfaceSoft, borderColor: theme.border }}
+          >
+            <p className="text-sm font-semibold opacity-80">{copy.home.payYourself}</p>
+            <p className="mt-1 text-sm font-black leading-snug">{modeHint}</p>
+          </div>
+        </div>
+      </div>
+
       <FractalTree
         capital={store.capital}
         target={store.targetCapital}
@@ -74,35 +102,7 @@ export default function HomeSection({
         copy={copy}
       />
 
-      <div className="relative z-10 -mt-1">
-        <div className="flex items-start justify-between gap-3">
-          <div className="min-w-0 flex-1">
-            <p className="text-[10px] font-semibold opacity-55">{copy.home.availableBalance}</p>
-            <button
-              type="button"
-              aria-label={`${copy.home.availableBalance}: ${fmt(store.availableBalance)}`}
-              className="mt-1 min-w-0 cursor-pointer text-left text-[clamp(1.65rem,10vw,2.35rem)] font-numbers font-extrabold leading-[0.92] tracking-tighter transition-transform active:scale-95 [overflow-wrap:anywhere]"
-              onClick={onEditBalance}
-            >
-              {fmt(store.availableBalance)}
-            </button>
-            <div className="mt-1.5 flex items-start gap-1.5 text-[10px] leading-[1.22] opacity-70">
-              <Sprout size={12} className="mt-0.5 shrink-0 text-[var(--mc-positive)]" />
-              <span>{treeStatus}</span>
-            </div>
-          </div>
-
-          <div
-            className="w-[5.9rem] shrink-0 rounded-full border px-2.5 py-1.5 text-center"
-            style={{ backgroundColor: theme.surfaceSoft, borderColor: theme.border }}
-          >
-            <p className="text-[10px] font-semibold opacity-55">{copy.home.payYourself}</p>
-            <p className="mt-1 text-[10px] font-black leading-[1.1]">{modeHint}</p>
-          </div>
-        </div>
-      </div>
-
-      <div className="mt-2.5 grid grid-cols-2 gap-2">
+      <div className="mt-2.5 grid grid-cols-2 gap-3">
         <ActionButton
           label={copy.home.income}
           icon={Plus}
@@ -138,12 +138,12 @@ export default function HomeSection({
             <DatabaseBackup size={12} />
           </div>
           <div className="min-w-0 flex-1">
-            <p className="text-[12px] font-bold leading-[1.2]">{copy.home.backupReminderTitle}</p>
-            <p className="mt-0.5 text-[10px] leading-[1.3] opacity-60">{copy.home.backupReminderBody}</p>
+            <p className="text-sm font-bold leading-snug">{copy.home.backupReminderTitle}</p>
+            <p className="mt-0.5 text-sm leading-[1.3] opacity-80">{copy.home.backupReminderBody}</p>
             <button
               type="button"
               onClick={onExportBackup}
-              className="mt-1.5 rounded-full border px-3 py-1 text-[10px] font-semibold text-[var(--mc-positive)]"
+              className="mt-1.5 rounded-full border px-3 py-1 text-sm font-semibold text-[var(--mc-positive)]"
               style={{ borderColor: theme.border }}
             >
               {copy.home.backupReminderAction}

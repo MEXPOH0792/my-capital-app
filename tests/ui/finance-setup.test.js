@@ -186,8 +186,8 @@ addTest('FinanceSetupSection smoke renders settings branch with backup and PIN c
     }),
   );
 
-  assert.ok(screen.getByText('Интерфейс и резервная копия'));
-  fireEvent.click(screen.getByRole('button', { name: /Резервная копия/i }));
+  assert.ok(screen.getByText('Вид приложения и копия данных'));
+  fireEvent.click(screen.getByRole('button', { name: /Копия данных/i }));
   assert.ok(screen.getByText(copy.settings.exportJson));
   assert.ok(screen.getByText('Защита PIN'));
   resetDom();

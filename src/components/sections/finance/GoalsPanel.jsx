@@ -18,9 +18,9 @@ export default function GoalsPanel({ copy, store, theme, text, onOpenTargetCapit
               <div className="flex h-6 w-6 items-center justify-center rounded-lg bg-emerald-500/10 text-[var(--mc-positive)]">
                 <Target size={14} />
               </div>
-              <span className="text-[10px] font-bold ">{copy.settings.capital}</span>
+              <span className="text-sm font-bold ">{copy.settings.capital}</span>
             </div>
-            <span className="text-[10px] font-black">{fmt(store.targetCapital)}</span>
+            <span className="text-sm font-black">{fmt(store.targetCapital)}</span>
           </div>
         </button>
 
@@ -35,9 +35,9 @@ export default function GoalsPanel({ copy, store, theme, text, onOpenTargetCapit
               <div className="flex h-6 w-6 items-center justify-center rounded-lg bg-amber-500/10 text-[var(--mc-warning)]">
                 <ShieldCheck size={14} />
               </div>
-              <span className="text-[10px] font-bold ">{copy.settings.safety}</span>
+              <span className="text-sm font-bold ">{copy.settings.safety}</span>
             </div>
-            <span className="text-[10px] font-black">{fmt(store.targetSafety)}</span>
+            <span className="text-sm font-black">{fmt(store.targetSafety)}</span>
           </div>
         </button>
       </SectionCard>

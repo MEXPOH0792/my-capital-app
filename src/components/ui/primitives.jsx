@@ -48,16 +48,16 @@ export function SectionHeader({
 }) {
   return (
     <div className={compact ? 'space-y-1' : 'space-y-1.5'}>
-      {eyebrow ? <p className={`text-[10px] font-semibold ${accentColor}`}>{eyebrow}</p> : null}
+      {eyebrow ? <p className={`text-sm font-semibold ${accentColor}`}>{eyebrow}</p> : null}
       {title ? (
         <p
-          className={`${compact ? 'text-[14px] leading-[1.22]' : 'text-[14px] leading-[1.24]'} font-bold [text-wrap:balance]`}
+          className={`${compact ? 'text-[14px] leading-snug' : 'text-[14px] leading-snug'} font-bold [text-wrap:balance]`}
         >
           {title}
         </p>
       ) : null}
       {description ? (
-        <p className={`${compact ? 'text-[10px]' : 'text-[11px]'} leading-[1.4] opacity-55`}>{description}</p>
+        <p className={`${compact ? 'text-sm' : 'text-sm'} leading-[1.4] opacity-80`}>{description}</p>
       ) : null}
     </div>
   );
@@ -73,7 +73,7 @@ export function MetricCard({ label, value, hint, theme, className = '', compact 
         boxShadow: strong ? 'inset 0 1px 0 rgba(255,255,255,0.05)' : 'inset 0 1px 0 rgba(255,255,255,0.03)',
       }}
     >
-      <p className="text-[10px] font-semibold opacity-55">{label}</p>
+      <p className="text-sm font-semibold opacity-80">{label}</p>
       <p
         className={`mt-1.5 min-w-0 font-numbers font-extrabold tabular-nums leading-none tracking-[-0.04em] [overflow-wrap:anywhere] ${
           compact ? 'text-[clamp(0.95rem,4.8vw,1.12rem)]' : 'text-[clamp(1.02rem,5.2vw,1.32rem)]'
@@ -81,9 +81,7 @@ export function MetricCard({ label, value, hint, theme, className = '', compact 
       >
         {value}
       </p>
-      {hint ? (
-        <p className={`mt-1 leading-[1.3] opacity-55 ${compact ? 'text-[10px]' : 'text-[11px]'}`}>{hint}</p>
-      ) : null}
+      {hint ? <p className={`mt-1 leading-[1.3] opacity-80 ${compact ? 'text-sm' : 'text-sm'}`}>{hint}</p> : null}
     </div>
   );
 }
@@ -95,8 +93,8 @@ export function EmptyState({ text, hint }) {
     <div className="rounded-[16px] border border-[var(--mc-border-soft)] bg-[var(--mc-soft-faint)] px-4 py-5 text-center">
       {/* The message leads and the hint supports it. These were inverted: the
           hint was both larger and brighter than the thing it explained. */}
-      <p className="text-[12px] font-semibold leading-[1.35] opacity-70">{text}</p>
-      {hint ? <p className="mx-auto mt-1.5 max-w-sm text-[10px] leading-[1.4] opacity-55">{hint}</p> : null}
+      <p className="text-sm font-semibold leading-[1.35] opacity-70">{text}</p>
+      {hint ? <p className="mx-auto mt-1.5 max-w-sm text-sm leading-[1.4] opacity-80">{hint}</p> : null}
     </div>
   );
 }
@@ -107,7 +105,7 @@ export function AllocationInput({ label, value, onChange, theme }) {
       className="rounded-[16px] border p-2.5"
       style={{ backgroundColor: theme.surfaceSoft, borderColor: theme.border }}
     >
-      <span className="mb-1.5 block text-[10px] font-semibold opacity-40 ">{label}</span>
+      <span className="mb-1.5 block text-sm font-semibold opacity-80 ">{label}</span>
       <div className="flex items-center gap-2">
         <input
           type="text"
@@ -116,7 +114,7 @@ export function AllocationInput({ label, value, onChange, theme }) {
           className="w-full min-w-0 bg-transparent text-[clamp(1rem,4.8vw,1.15rem)] font-numbers font-extrabold outline-none"
           placeholder="0"
         />
-        <Percent size={14} className="opacity-40" />
+        <Percent size={14} className="opacity-80" />
       </div>
     </label>
   );
