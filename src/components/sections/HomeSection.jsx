@@ -46,9 +46,7 @@ export default function HomeSection({
   const allocationPercents = store.allocationPercents || {};
   const insight = advisorInsight || {};
   const savedFirstPercent = 100 - (allocationPercents.balance ?? 0);
-  const modeHint = store.incomeDistributionEnabled
-    ? `${savedFirstPercent}% ${copy.settings.toYou}`
-    : copy.settings.disabled;
+  const modeHint = store.incomeDistributionEnabled ? `${savedFirstPercent}%` : copy.settings.disabled;
 
   const treeStatus = !store.incomeDistributionEnabled
     ? copy.home.treeStateNoMode
@@ -85,11 +83,11 @@ export default function HomeSection({
           </div>
 
           <div
-            className="min-w-0 max-w-full rounded-2xl border px-3 py-2 text-left"
+            className="flex min-h-[61px] w-32 shrink-0 flex-col justify-center rounded-2xl border px-3 py-2 text-left"
             style={{ backgroundColor: theme.surfaceSoft, borderColor: theme.border }}
           >
             <p className="text-sm font-semibold opacity-80">{copy.home.payYourself}</p>
-            <p className="mt-1 text-sm font-black leading-snug">{modeHint}</p>
+            <p className="mt-1 font-numbers text-sm font-black leading-snug">{modeHint}</p>
           </div>
         </div>
       </div>
