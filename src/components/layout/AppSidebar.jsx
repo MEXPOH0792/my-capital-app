@@ -68,7 +68,7 @@ export default function AppSidebar({
         role="dialog"
         aria-modal="true"
         aria-label={copy.menu || 'Navigation'}
-        className="mc-sidebar-enter fixed right-0 top-0 bottom-0 z-[110] flex w-[82vw] max-w-[320px] flex-col overflow-hidden border-l p-4 safe-top safe-bottom md:p-6"
+        className="mc-sidebar-enter fixed left-0 top-0 bottom-0 z-[110] flex w-[82vw] max-w-[320px] flex-col overflow-hidden border-r p-4 safe-top safe-bottom md:p-6"
         style={{ backgroundColor: theme.surface, borderColor: theme.border, boxShadow: theme.panelShadow }}
       >
         <div className="mb-6 flex items-center justify-between md:mb-8">

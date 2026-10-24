@@ -22,6 +22,17 @@ export default function AppHeader({
   return (
     <header className={headerClassName} style={headerStyle}>
       <div className="flex items-center gap-2 min-w-0">
+        <button
+          type="button"
+          onClick={onOpenSidebar}
+          aria-label={copy.menu || 'Menu'}
+          aria-haspopup="dialog"
+          className="min-h-[48px] shrink-0 rounded-2xl flex items-center justify-center gap-2 px-3 transition-transform active:scale-95"
+          style={panelStyle}
+        >
+          <Menu size={22} aria-hidden="true" />
+          <span className="text-sm font-semibold">{copy.menu}</span>
+        </button>
         {!isHome && (
           <button
             type="button"
@@ -52,17 +63,6 @@ export default function AppHeader({
           style={panelStyle}
         >
           {isDarkMode ? <Sun size={18} aria-hidden="true" /> : <Moon size={18} aria-hidden="true" />}
-        </button>
-        <button
-          type="button"
-          onClick={onOpenSidebar}
-          aria-label={copy.menu || 'Menu'}
-          aria-haspopup="dialog"
-          className="min-h-[48px] rounded-2xl flex items-center justify-center gap-2 px-3 transition-transform active:scale-95"
-          style={panelStyle}
-        >
-          <Menu size={22} aria-hidden="true" />
-          <span className="text-sm font-semibold">{copy.menu}</span>
         </button>
       </div>
     </header>
