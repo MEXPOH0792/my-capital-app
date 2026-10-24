@@ -21,7 +21,7 @@ export function CategoryBreakdownCard({ title, items, total, theme, fmt, emptyTe
 
   return (
     <div
-      className="rounded-[22px] md:rounded-[22px] border px-4 md:px-5 py-4 md:py-5"
+      className="min-w-0 w-full rounded-[22px] border p-3"
       style={{ backgroundColor: theme.surfaceSoft, borderColor: theme.border }}
     >
       <p className="text-[10px] font-semibold opacity-55">{title}</p>
@@ -35,7 +35,9 @@ export function CategoryBreakdownCard({ title, items, total, theme, fmt, emptyTe
               <div key={`${title}-${item.category}`} className="space-y-2">
                 <div className="flex items-center justify-between gap-4 text-sm">
                   <span className="min-w-0 truncate font-bold">{item.category}</span>
-                  <span className="shrink-0 font-numbers font-extrabold">{fmt(item.amount)}</span>
+                  <span className="min-w-0 max-w-[48%] text-right font-numbers font-extrabold [overflow-wrap:anywhere]">
+                    {fmt(item.amount)}
+                  </span>
                 </div>
                 <div className="flex items-center gap-3">
                   <div className="h-2 flex-1 overflow-hidden rounded-full bg-[var(--mc-soft)]">

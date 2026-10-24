@@ -32,7 +32,7 @@ export default function DebtsSection({
   return (
     <div className="space-y-2">
       <div className="flex items-center justify-between gap-3">
-        <h2 className="text-[clamp(1.25rem,5vw,1.55rem)] font-display font-extrabold tracking-tight">
+        <h2 className="text-[clamp(1.55rem,6vw,1.9rem)] font-display font-extrabold tracking-tight leading-[0.98]">
           {copy.debts.title}
         </h2>
         <button

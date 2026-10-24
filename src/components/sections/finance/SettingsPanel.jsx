@@ -104,10 +104,10 @@ export default function SettingsPanel({ copy, store, theme, softPanelStyle, text
               type="button"
               onClick={() => setIsCurrencyOpen((value) => !value)}
               aria-expanded={isCurrencyOpen}
-              className="flex w-full items-center justify-between gap-3 text-left"
+              className="flex w-full flex-col items-stretch gap-1.5 text-left min-[420px]:flex-row min-[420px]:items-center min-[420px]:justify-between"
             >
-              <span className="text-sm font-semibold opacity-80">{currencyLabel}</span>
-              <span className="flex min-w-0 items-center gap-2">
+              <span className="shrink-0 text-sm font-semibold opacity-80">{currencyLabel}</span>
+              <span className="flex min-w-0 items-center justify-between gap-2 min-[420px]:justify-end">
                 <span className="min-w-0 break-words text-sm font-bold opacity-70">{activeCurrency?.label}</span>
                 <span className="shrink-0 text-sm font-semibold " style={{ color: theme.accent }}>
                   {store.currency}

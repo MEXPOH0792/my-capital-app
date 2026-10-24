@@ -68,7 +68,7 @@ export default function AppSidebar({
         role="dialog"
         aria-modal="true"
         aria-label={copy.menu || 'Navigation'}
-        className="mc-sidebar-enter fixed left-0 top-0 bottom-0 z-[110] flex w-[82vw] max-w-[320px] flex-col overflow-hidden border-r p-4 safe-top safe-bottom md:p-6"
+        className="mc-sidebar-enter fixed left-0 top-0 bottom-0 z-[110] flex w-[82vw] max-w-[320px] flex-col overflow-hidden border-r px-4 pb-[calc(16px+var(--safe-bottom))] pt-[calc(16px+var(--safe-top))] md:px-6 md:pb-[calc(24px+var(--safe-bottom))] md:pt-[calc(24px+var(--safe-top))]"
         style={{ backgroundColor: theme.surface, borderColor: theme.border, boxShadow: theme.panelShadow }}
       >
         <div className="mb-6 flex items-center justify-between md:mb-8">
@@ -88,7 +88,7 @@ export default function AppSidebar({
           </button>
         </div>
 
-        <nav className="space-y-1.5 flex-1 overflow-y-auto pr-1">
+        <nav className="scrollbar-hide min-h-0 flex-1 space-y-1.5 overflow-y-auto pr-1">
           <NavGroup
             items={primaryNavItems}
             activeTab={activeTab}

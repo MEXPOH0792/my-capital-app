@@ -65,7 +65,7 @@ export default function HomeSection({
   const nextStepHint = goalJourney?.remainingToNext > 0 ? copy.home.nextStepHint : copy.home.goalReached;
 
   return (
-    <div className="relative -mx-3 px-4 pb-5 pt-2" style={{ backgroundColor: theme.background }}>
+    <div className="relative min-w-0 pb-5 pt-2" style={{ backgroundColor: theme.background }}>
       <div className="relative z-10 -mt-1">
         <div className="flex flex-wrap items-start justify-between gap-3">
           <div className="min-w-0 basis-full sm:basis-0 flex-1">
@@ -85,7 +85,7 @@ export default function HomeSection({
           </div>
 
           <div
-            className="max-w-full rounded-2xl border px-3 py-2 text-left"
+            className="min-w-0 max-w-full rounded-2xl border px-3 py-2 text-left"
             style={{ backgroundColor: theme.surfaceSoft, borderColor: theme.border }}
           >
             <p className="text-sm font-semibold opacity-80">{copy.home.payYourself}</p>

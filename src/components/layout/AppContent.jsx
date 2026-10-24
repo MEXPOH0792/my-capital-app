@@ -8,8 +8,11 @@ function PageFrame({ pageKey, children }) {
   // `key={pageKey}` forces React to remount the section on tab change, which
   // restarts the CSS keyframe via the `mc-tab-page` class. Cheap, no JS state.
   return (
-    <section key={pageKey} className="mc-tab-page absolute inset-0 overflow-y-auto overscroll-contain scrollbar-hide">
-      <div className="mx-auto min-h-full w-full max-w-xl px-4 py-2 md:px-12 md:py-4">{children}</div>
+    <section
+      key={pageKey}
+      className="mc-tab-page absolute inset-0 overflow-x-hidden overflow-y-auto overscroll-contain scrollbar-hide"
+    >
+      <div className="mx-auto min-h-full min-w-0 w-full max-w-xl px-4 py-2 md:px-8 md:py-4">{children}</div>
     </section>
   );
 }

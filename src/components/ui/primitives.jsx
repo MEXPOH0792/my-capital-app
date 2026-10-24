@@ -31,7 +31,7 @@ export function SectionCard({ theme, className = '', soft = false, tone = 'defau
 
   return (
     <div
-      className={`rounded-[22px] md:rounded-[22px] border ${className}`.trim()}
+      className={`min-w-0 w-full rounded-[22px] border ${className}`.trim()}
       style={toneStyles[tone] || toneStyles.default}
     >
       {children}
@@ -48,7 +48,7 @@ export function SectionHeader({
 }) {
   return (
     <div className={compact ? 'space-y-1' : 'space-y-1.5'}>
-      {eyebrow ? <p className={`text-sm font-semibold ${accentColor}`}>{eyebrow}</p> : null}
+      {eyebrow && eyebrow !== title ? <p className={`text-sm font-semibold ${accentColor}`}>{eyebrow}</p> : null}
       {title ? (
         <p
           className={`${compact ? 'text-[14px] leading-snug' : 'text-[14px] leading-snug'} font-bold [text-wrap:balance]`}

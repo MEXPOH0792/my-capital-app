@@ -91,13 +91,13 @@ export default function LimitsPanel({ theme, store, copy, softPanelStyle, fmt, f
           </div>
         ) : null}
 
-        <div className="grid grid-cols-[1fr_auto] gap-2">
+        <div className="grid min-w-0 grid-cols-[minmax(0,1fr)_minmax(0,7rem)] gap-2 max-[359px]:grid-cols-1">
           <input
             type="text"
             value={form.category}
             onChange={(event) => setForm((prev) => ({ ...prev, category: event.target.value }))}
             placeholder={isEnglish ? 'Category' : 'Категория'}
-            className="w-full rounded-[16px] border px-3.5 py-2 text-[13px] font-bold outline-none"
+            className="min-w-0 w-full rounded-[16px] border px-3.5 py-2 text-[13px] font-bold outline-none"
             style={softPanelStyle}
           />
           <input
@@ -106,7 +106,7 @@ export default function LimitsPanel({ theme, store, copy, softPanelStyle, fmt, f
             value={form.amount}
             onChange={(event) => setForm((prev) => ({ ...prev, amount: formatInput(event.target.value) }))}
             placeholder={isEnglish ? 'Amount' : 'Сумма'}
-            className="w-28 rounded-[16px] border px-3.5 py-2 text-[13px] font-bold outline-none"
+            className="min-w-0 w-full rounded-[16px] border px-3.5 py-2 text-[13px] font-bold outline-none"
             style={softPanelStyle}
           />
         </div>

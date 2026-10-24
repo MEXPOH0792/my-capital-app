@@ -53,7 +53,7 @@ export function DebtStrategyCard({
 
   return (
     <div
-      className="space-y-1.5 rounded-[16px] border p-2.5 md:rounded-[16px]"
+      className="min-w-0 w-full space-y-1.5 rounded-[22px] border p-3"
       style={{ backgroundColor: theme.surface, borderColor: theme.border, boxShadow: theme.panelShadow }}
     >
       <div className="flex items-start justify-between gap-2">
@@ -128,7 +128,7 @@ export function DebtCard({ debt, theme, onEdit, onPay, isTopPriority, isAvalanch
 
   return (
     <div
-      className={`group rounded-[16px] border p-2 transition-all ${isTopPriority ? 'ring-2 ring-red-500/20' : ''}`}
+      className={`group min-w-0 w-full rounded-[22px] border p-3 transition-all ${isTopPriority ? 'ring-2 ring-red-500/20' : ''}`}
       style={{ backgroundColor: theme.surface, borderColor: theme.border }}
     >
       <div className="mb-1.5 flex items-start justify-between gap-2">
@@ -175,9 +175,11 @@ export function DebtCard({ debt, theme, onEdit, onPay, isTopPriority, isAvalanch
           </div>
         </div>
 
-        <div className="shrink-0 text-right">
+        <div className="min-w-0 max-w-[48%] text-right">
           <p className="mb-0.5 text-[10px] font-semibold opacity-40">{copy.debts.balanceLeft}</p>
-          <p className="text-[12px] font-numbers font-extrabold md:text-[14px]">{fmt(debt.currentBalance)}</p>
+          <p className="font-numbers text-[12px] font-extrabold [overflow-wrap:anywhere] md:text-[14px]">
+            {fmt(debt.currentBalance)}
+          </p>
         </div>
       </div>
 

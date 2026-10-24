@@ -21,7 +21,7 @@ export default function AppHeader({
 
   return (
     <header className={headerClassName} style={headerStyle}>
-      <div className="flex items-center gap-2 min-w-0">
+      <div className="flex min-w-0 flex-1 items-center gap-2">
         <button
           type="button"
           onClick={onOpenSidebar}
@@ -31,24 +31,24 @@ export default function AppHeader({
           style={panelStyle}
         >
           <Menu size={22} aria-hidden="true" />
-          <span className="text-sm font-semibold">{copy.menu}</span>
+          <span className="hidden text-sm font-semibold min-[380px]:inline">{copy.menu}</span>
         </button>
         {!isHome && (
           <button
             type="button"
             onClick={onBackHome}
             aria-label={copy.backToTree || 'Back'}
-            className="min-h-[48px] rounded-2xl flex items-center justify-center gap-2 px-2 transition-all border border-transparent active:scale-95 text-[var(--mc-positive)]"
+            className="min-h-[48px] min-w-0 rounded-2xl flex items-center justify-center gap-2 px-2 transition-all border border-transparent active:scale-95 text-[var(--mc-positive)]"
             style={panelStyle}
           >
             <ArrowLeft size={18} aria-hidden="true" />
-            <span className="text-sm">{copy.backToTree}</span>
+            <span className="hidden truncate text-sm min-[420px]:inline">{copy.backToTree}</span>
           </button>
         )}
 
         {isHome && (
           <div className="flex min-w-0 flex-col">
-            <span className="break-words font-display font-bold text-base leading-snug">{copy.appTitle}</span>
+            <span className="truncate font-display font-bold text-base leading-snug">{copy.appTitle}</span>
           </div>
         )}
       </div>

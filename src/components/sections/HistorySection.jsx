@@ -199,7 +199,7 @@ function HistorySection({
     <div className="space-y-1.5">
       <div className="space-y-0.5">
         <p className="text-[10px] font-semibold opacity-55">{copy.nav.history}</p>
-        <h2 className="text-[clamp(1.22rem,4.7vw,1.45rem)] font-display font-extrabold leading-none">
+        <h2 className="text-[clamp(1.55rem,6vw,1.9rem)] font-display font-extrabold leading-[0.98]">
           {copy.history.title}
         </h2>
       </div>
@@ -222,17 +222,17 @@ function HistorySection({
           ))}
         </div>
 
-        <div className="grid grid-cols-[1fr_auto] items-center gap-1.5">
+        <div className="grid min-w-0 grid-cols-1 items-center gap-1.5 min-[420px]:grid-cols-[minmax(0,1fr)_auto]">
           <input
             type="text"
             value={historyQuery}
             onChange={(event) => setHistoryQuery(event.target.value)}
             placeholder={searchPlaceholder}
-            className="h-8 w-full rounded-[12px] border px-3 text-[11px] font-bold outline-none"
+            className="min-w-0 w-full rounded-[12px] border px-3 text-[11px] font-bold outline-none"
             style={softPanelStyle}
           />
           <div
-            className="rounded-[12px] border px-2.5 py-1.5 text-[10px] font-black leading-none opacity-70"
+            className="justify-self-end rounded-[12px] border px-2.5 py-1.5 text-[10px] font-black leading-none opacity-70"
             style={softPanelStyle}
           >
             {shownEntriesText}

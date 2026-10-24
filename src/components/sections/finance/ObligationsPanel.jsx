@@ -59,8 +59,10 @@ export default function ObligationsPanel({ copy, store, theme, softPanelStyle, t
                   <p className="break-words text-[13px] font-bold">{item.title}</p>
                   <p className="mt-0.5 text-sm font-semibold opacity-80">{copy.settings.requiredPayment}</p>
                 </div>
-                <div className="flex items-center gap-3">
-                  <span className="whitespace-nowrap text-sm font-numbers font-black">{fmt(item.amount)}</span>
+                <div className="flex min-w-0 items-center gap-3">
+                  <span className="min-w-0 text-right text-sm font-numbers font-black [overflow-wrap:anywhere]">
+                    {fmt(item.amount)}
+                  </span>
                   <button
                     type="button"
                     onClick={() => store.removeRequiredExpense(item.id)}
