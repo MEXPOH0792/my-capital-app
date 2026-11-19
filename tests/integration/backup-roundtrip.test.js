@@ -4,6 +4,7 @@ import { completeBaseOnboarding, getSystemAccount, resetStore, useStore } from '
 import { loadBackupPayload } from '../../src/hooks/workspace/backupFile.js';
 import { encryptBackup } from '../../src/utils/backupCrypto.js';
 import { toMinorUnits } from '../../src/utils/money.js';
+import { MAX_BACKUP_FILE_BYTES } from '../../src/store/backupLimits.js';
 
 const asFile = (value) => ({ text: async () => JSON.stringify(value) });
 
@@ -75,4 +76,21 @@ addTest('a non-backup file is rejected with a readable message', async () => {
     loadBackupPayload(file, { isEnglish: false, askPassword: answers().askPassword }),
     /не файл резервной копии/,
   );
+});
+
+addTest('an oversized backup is rejected before its contents are read', async () => {
+  let readAttempted = false;
+  const file = {
+    size: MAX_BACKUP_FILE_BYTES + 1,
+    text: async () => {
+      readAttempted = true;
+      return '{}';
+    },
+  };
+
+  await assert.rejects(
+    loadBackupPayload(file, { isEnglish: true, askPassword: answers().askPassword }),
+    /larger than 25 MB/,
+  );
+  assert.equal(readAttempted, false);
 });

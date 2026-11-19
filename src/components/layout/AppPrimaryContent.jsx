@@ -11,9 +11,10 @@ const AnalyticsSection = lazy(loadAnalyticsSection);
 const HistorySection = lazy(loadHistorySection);
 
 export function preloadPrimarySections() {
-  return [loadHomeSection, loadDebtsSection, loadAnalyticsSection, loadHistorySection].reduce(
-    (queue, loadChunk) => queue.then(() => loadChunk().catch(() => {})),
-    Promise.resolve(),
+  return Promise.all(
+    [loadHomeSection, loadDebtsSection, loadAnalyticsSection, loadHistorySection].map((loadChunk) =>
+      loadChunk().catch(() => {}),
+    ),
   );
 }
 
@@ -46,8 +47,6 @@ export default function AppPrimaryContent({ activeTab, shell, home, debts, analy
           locale={home.locale}
           onOpenIncome={home.onOpenIncome}
           onOpenExpense={home.onOpenExpense}
-          showBackupReminder={home.showBackupReminder}
-          onExportBackup={home.onExportBackup}
         />
       </Suspense>
     );

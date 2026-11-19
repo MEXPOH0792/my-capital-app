@@ -8,7 +8,7 @@ export function buildStorageLabels(isEnglish) {
       : 'Здесь учитываются деньги на повседневные и нужные траты.',
     primaryFallback: isEnglish ? 'Spending account' : 'На каждый день',
     secondaryFallback: '',
-    safetyFallback: isEnglish ? 'Emergency fund' : 'На случай трудностей',
+    safetyFallback: isEnglish ? 'Emergency fund' : 'Финансовый запас',
     capitalFallback: isEnglish ? 'Capital bucket' : 'Накопления на будущее',
     sadakaFallback: isEnglish ? 'Sadaka charity' : 'Помощь другим',
     sadakaHint: isEnglish ? 'Sadaka means charity or donation.' : 'Садака — пожертвование.',

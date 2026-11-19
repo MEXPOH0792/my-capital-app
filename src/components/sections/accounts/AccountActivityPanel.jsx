@@ -1,5 +1,7 @@
 import { useMemo } from 'react';
 import { SectionCard } from '../../ui/AppUi.jsx';
+import { isAndroidDesign } from '../../../app/platformDesign.js';
+import CategoryIcon from '../../ui/CategoryIcon.jsx';
 
 export default function AccountActivityPanel({
   theme,
@@ -97,6 +99,14 @@ export default function AccountActivityPanel({
               <div className="flex items-start justify-between gap-3">
                 <div className="min-w-0">
                   <div className="flex flex-wrap items-center gap-1.5">
+                    {isAndroidDesign() ? (
+                      <CategoryIcon
+                        category={item.category}
+                        type={item.type}
+                        appearance={item.meta?.categoryAppearance}
+                        compact
+                      />
+                    ) : null}
                     <p className="truncate text-[12px] font-bold">{item.category}</p>
                     <span className={`rounded-full px-2 py-0.5 text-[10px] font-semibold ${toneClass} ${badgeTone}`}>
                       {badgeText}

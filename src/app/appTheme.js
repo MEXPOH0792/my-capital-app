@@ -1,3 +1,5 @@
+import { isAndroidDesign } from './platformDesign.js';
+
 export const THEMES = {
   dark: {
     bg: '#020402',
@@ -30,6 +32,40 @@ export const THEMES = {
     panelShadow: '0 20px 42px rgba(18,41,26,0.08)',
   },
 };
+
+export const ANDROID_THEMES = {
+  dark: {
+    ...THEMES.dark,
+    bg: '#101714',
+    surface: '#1D2722',
+    surfaceSoft: '#18211C',
+    textPrimary: '#F5F7F5',
+    textSecondary: '#A9B8AE',
+    border: '#34463B',
+    accent: '#57CE93',
+    sidebarBg: '#101714',
+    pageGradient: 'none',
+    panelShadow: 'none',
+  },
+  light: {
+    ...THEMES.light,
+    bg: '#F6F8F6',
+    surface: '#FFFFFF',
+    surfaceSoft: '#EDF2EE',
+    textPrimary: '#14251C',
+    textSecondary: '#586B5F',
+    border: '#D8E2DA',
+    accent: '#08784B',
+    sidebarBg: '#F6F8F6',
+    pageGradient: 'none',
+    panelShadow: 'none',
+  },
+};
+
+export function getAppTheme(isDarkMode) {
+  const themes = isAndroidDesign() ? ANDROID_THEMES : THEMES;
+  return isDarkMode ? themes.dark : themes.light;
+}
 
 export function getThemeStyles(theme, isDarkMode) {
   const panelStyle = { backgroundColor: theme.surface, borderColor: theme.border, boxShadow: theme.panelShadow };

@@ -7,10 +7,7 @@ const AccountsSection = lazy(loadAccountsSection);
 const FinanceSetupSection = lazy(loadFinanceSetupSection);
 
 export function preloadSetupSections() {
-  return [loadAccountsSection, loadFinanceSetupSection].reduce(
-    (queue, loadChunk) => queue.then(() => loadChunk().catch(() => {})),
-    Promise.resolve(),
-  );
+  return Promise.all([loadAccountsSection, loadFinanceSetupSection].map((loadChunk) => loadChunk().catch(() => {})));
 }
 
 function ScreenFallback() {

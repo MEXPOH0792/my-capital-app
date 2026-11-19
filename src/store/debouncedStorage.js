@@ -22,13 +22,47 @@ const BACKUP_SUFFIX = '__bak';
 
 const isRecoverableValue = (value) => typeof value === 'string' && value.trim().length > 2;
 
-export const createDebouncedStorage = (storage, delayMs = DEFAULT_DELAY_MS) => {
-  // pending: key -> { kind: 'set'|'remove', value?: string }
+export const createDebouncedStorage = (storage, delayMs = DEFAULT_DELAY_MS, options = {}) => {
+  // pending: key -> { kind: 'set'|'remove', value?: string, baseValue: string|null }
   const pending = new Map();
+  // The committed value that this tab actually hydrated from. Comparing
+  // against this value before every flush prevents an older tab from replacing
+  // data written by a newer tab or by the native voice-entry flow.
+  const observedCommitted = new Map();
+  const conflictedKeys = new Set();
   let timer = null;
 
   const backupKeyFor = (key) => `${key}${BACKUP_SUFFIX}`;
   const isBackupKey = (key) => key.endsWith(BACKUP_SUFFIX);
+
+  const targetValueFor = (action) => (action.kind === 'remove' ? null : action.value);
+
+  const notifyConflict = (key, expectedValue, committedValue) => {
+    pending.delete(key);
+    if (conflictedKeys.has(key)) return;
+    conflictedKeys.add(key);
+    options.onConflict?.({ key, expectedValue, committedValue });
+  };
+
+  const reconcileExternalValue = (key, committedValue) => {
+    if (!observedCommitted.has(key) || conflictedKeys.has(key)) return;
+    const expectedValue = observedCommitted.get(key);
+    if (committedValue === expectedValue) return;
+
+    const pendingAction = pending.get(key);
+    if (pendingAction && committedValue === targetValueFor(pendingAction)) {
+      pending.delete(key);
+      observedCommitted.set(key, committedValue);
+      return;
+    }
+    notifyConflict(key, expectedValue, committedValue);
+  };
+
+  const checkForExternalChanges = () => {
+    for (const key of observedCommitted.keys()) {
+      reconcileExternalValue(key, storage.getItem(key));
+    }
+  };
 
   const flushNow = () => {
     timer = null;
@@ -36,7 +70,19 @@ export const createDebouncedStorage = (storage, delayMs = DEFAULT_DELAY_MS) => {
     const snapshot = Array.from(pending.entries());
     pending.clear();
     for (const [key, action] of snapshot) {
+      if (conflictedKeys.has(key)) continue;
       try {
+        const committed = storage.getItem(key);
+        const targetValue = targetValueFor(action);
+        if (committed !== action.baseValue) {
+          if (committed === targetValue) {
+            observedCommitted.set(key, committed);
+            continue;
+          }
+          notifyConflict(key, action.baseValue, committed);
+          continue;
+        }
+
         if (action.kind === 'remove') {
           // Intentionally keep the backup on remove so an accidental clear can
           // still be recovered on the next read.
@@ -57,6 +103,7 @@ export const createDebouncedStorage = (storage, delayMs = DEFAULT_DELAY_MS) => {
           }
           storage.setItem(key, action.value);
         }
+        observedCommitted.set(key, targetValue);
       } catch (error) {
         // Surface but do not throw — losing one write should not break the app.
         if (typeof console !== 'undefined') {
@@ -84,8 +131,20 @@ export const createDebouncedStorage = (storage, delayMs = DEFAULT_DELAY_MS) => {
     window.addEventListener('pagehide', hardFlush);
     document.addEventListener?.('visibilitychange', () => {
       if (document.visibilityState === 'hidden') hardFlush();
+      else checkForExternalChanges();
     });
   }
+
+  const handleStorageEvent = (event) => {
+    if (event?.key === null) {
+      checkForExternalChanges();
+      return;
+    }
+    const key = event?.key;
+    if (!key || isBackupKey(key)) return;
+    reconcileExternalValue(key, event.newValue ?? storage.getItem(key));
+  };
+  options.eventTarget?.addEventListener?.('storage', handleStorageEvent);
 
   return {
     getItem: (key) => {
@@ -94,6 +153,7 @@ export const createDebouncedStorage = (storage, delayMs = DEFAULT_DELAY_MS) => {
         return pendingAction.kind === 'remove' ? null : pendingAction.value;
       }
       const primary = storage.getItem(key);
+      observedCommitted.set(key, primary);
       if (primary != null && String(primary).length > 0) return primary;
       // Primary missing/empty — attempt recovery from the backup slot.
       if (!isBackupKey(key)) {
@@ -108,11 +168,25 @@ export const createDebouncedStorage = (storage, delayMs = DEFAULT_DELAY_MS) => {
       return primary;
     },
     setItem: (key, value) => {
-      pending.set(key, { kind: 'set', value });
+      if (conflictedKeys.has(key)) return;
+      const previousPending = pending.get(key);
+      const baseValue = previousPending
+        ? previousPending.baseValue
+        : observedCommitted.has(key)
+          ? observedCommitted.get(key)
+          : storage.getItem(key);
+      pending.set(key, { kind: 'set', value, baseValue });
       scheduleFlush();
     },
     removeItem: (key) => {
-      pending.set(key, { kind: 'remove' });
+      if (conflictedKeys.has(key)) return;
+      const previousPending = pending.get(key);
+      const baseValue = previousPending
+        ? previousPending.baseValue
+        : observedCommitted.has(key)
+          ? observedCommitted.get(key)
+          : storage.getItem(key);
+      pending.set(key, { kind: 'remove', baseValue });
       scheduleFlush();
     },
     /**
@@ -126,5 +200,15 @@ export const createDebouncedStorage = (storage, delayMs = DEFAULT_DELAY_MS) => {
       }
       flushNow();
     },
+    /** Drop buffered writes so a deliberate full erase cannot be undone later. */
+    discardPending: () => {
+      if (timer != null) {
+        clearTimeout(timer);
+        timer = null;
+      }
+      pending.clear();
+    },
+    checkForExternalChanges,
+    destroy: () => options.eventTarget?.removeEventListener?.('storage', handleStorageEvent),
   };
 };

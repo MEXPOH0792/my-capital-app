@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
 import { useShallow } from 'zustand/react/shallow';
 import { getCopy } from '../i18n.js';
 import { useStore } from '../store/useAppStore.js';
@@ -11,13 +11,12 @@ import { loadBackupPayload } from '../hooks/workspace/backupFile.js';
 import { requestBackupPassword } from '../utils/passwordDialog.js';
 import {
   PIN_ATTEMPTS_STORAGE_KEY,
+  BIOMETRIC_OPT_IN_STORAGE_KEY,
   readSecureValue,
   removeSecureValue,
   writeSecureValue,
 } from '../utils/secureBridgeStorage.js';
-import { THEMES, getThemeStyles } from './appTheme.js';
-
-const BIOMETRIC_OPT_IN_KEY = 'capital-tree-pro-v9:biometric-enabled';
+import { getAppTheme, getThemeStyles } from './appTheme.js';
 
 export function useAppShell() {
   const store = useStore(
@@ -104,13 +103,27 @@ export function useAppShell() {
       updateIncomeTransaction: state.updateIncomeTransaction,
       updateExpenseTransaction: state.updateExpenseTransaction,
       resetData: state.resetData,
+      eraseAllData: state.eraseAllData,
     })),
   );
 
   const copy = getCopy(store.language);
   const isEnglish = store.language === 'en';
-  const theme = store.isDarkMode ? THEMES.dark : THEMES.light;
+  const theme = getAppTheme(store.isDarkMode);
   const styles = getThemeStyles(theme, store.isDarkMode);
+  const toggleThemeInstant = useCallback(() => {
+    const root = typeof document === 'undefined' ? null : document.documentElement;
+    if (root) root.dataset.themeSwitching = 'true';
+    store.toggleTheme();
+
+    if (!root || typeof window === 'undefined') return;
+    window.requestAnimationFrame(() => {
+      window.requestAnimationFrame(() => {
+        delete root.dataset.themeSwitching;
+      });
+    });
+  }, [store.toggleTheme]);
+  const viewStore = useMemo(() => ({ ...store, toggleTheme: toggleThemeInstant }), [store, toggleThemeInstant]);
   const [isLocked, setIsLocked] = useState(Boolean(store.securityPinHash));
   // Wrong-PIN counter lives in secure storage so a restart does not reset it.
   const [pinAttempts, setPinAttempts] = useState(() => parsePinAttempts(readSecureValue(PIN_ATTEMPTS_STORAGE_KEY, '')));
@@ -183,25 +196,18 @@ export function useAppShell() {
     }
   }, [store.securityPinHash]);
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     if (typeof document !== 'undefined') {
       document.documentElement.style.backgroundColor = theme.bg;
       document.body.style.backgroundColor = theme.bg;
+      document.documentElement.lang = store.language === 'en' ? 'en' : 'ru';
+      document.documentElement.dataset.theme = store.isDarkMode ? 'dark' : 'light';
       const themeColorMeta = document.querySelector('meta[name="theme-color"]');
       if (themeColorMeta) {
         themeColorMeta.setAttribute('content', theme.bg);
       }
     }
-  }, [theme.bg]);
-
-  // Keep <html lang> + data-theme in sync with the active language/theme so
-  // screen readers pick the right pronunciation and locale-scoped tooling can
-  // observe the current mode without reading from the store.
-  useEffect(() => {
-    if (typeof document === 'undefined') return;
-    document.documentElement.lang = store.language === 'en' ? 'en' : 'ru';
-    document.documentElement.dataset.theme = store.isDarkMode ? 'dark' : 'light';
-  }, [store.language, store.isDarkMode]);
+  }, [theme.bg, store.language, store.isDarkMode]);
 
   useEffect(() => {
     if (typeof window === 'undefined') return;
@@ -225,7 +231,7 @@ export function useAppShell() {
     store.clearSecurityPinHash();
     try {
       if (typeof localStorage !== 'undefined') {
-        localStorage.removeItem(BIOMETRIC_OPT_IN_KEY);
+        localStorage.removeItem(BIOMETRIC_OPT_IN_STORAGE_KEY);
       }
     } catch {
       /* ignore */
@@ -246,7 +252,7 @@ export function useAppShell() {
   const [isBiometricEnabled, setIsBiometricEnabled] = useState(false);
   useEffect(() => {
     if (typeof localStorage === 'undefined') return;
-    setIsBiometricEnabled(localStorage.getItem(BIOMETRIC_OPT_IN_KEY) === '1');
+    setIsBiometricEnabled(localStorage.getItem(BIOMETRIC_OPT_IN_STORAGE_KEY) === '1');
   }, [store.securityPinHash]);
 
   const enableBiometric = useCallback(async () => {
@@ -259,7 +265,7 @@ export function useAppShell() {
     });
     if (!result.ok) return false;
     try {
-      localStorage.setItem(BIOMETRIC_OPT_IN_KEY, '1');
+      localStorage.setItem(BIOMETRIC_OPT_IN_STORAGE_KEY, '1');
     } catch {
       /* ignore */
     }
@@ -269,7 +275,7 @@ export function useAppShell() {
 
   const disableBiometric = useCallback(() => {
     try {
-      localStorage.removeItem(BIOMETRIC_OPT_IN_KEY);
+      localStorage.removeItem(BIOMETRIC_OPT_IN_STORAGE_KEY);
     } catch {
       /* ignore */
     }
@@ -329,7 +335,7 @@ export function useAppShell() {
     store.clearSecurityPinHash();
     savePinAttempts(EMPTY_PIN_ATTEMPTS);
     try {
-      localStorage.removeItem(BIOMETRIC_OPT_IN_KEY);
+      localStorage.removeItem(BIOMETRIC_OPT_IN_STORAGE_KEY);
     } catch {
       /* ignore */
     }
@@ -337,7 +343,7 @@ export function useAppShell() {
   }, [store, savePinAttempts]);
 
   const wipeAfterForgottenPin = useCallback(() => {
-    store.resetData();
+    store.eraseAllData();
     finishForgottenPin();
   }, [store, finishForgottenPin]);
 
@@ -392,7 +398,7 @@ export function useAppShell() {
   const workspace = useWorkspaceFlow({ store, copy, isEnglish, security });
 
   return {
-    store,
+    store: viewStore,
     copy,
     isEnglish,
     theme,

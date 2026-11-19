@@ -2,6 +2,8 @@ import { useState } from 'react';
 import { ArrowDown, ArrowUp, Check, ChevronDown, Pencil, Trash2, Wallet, X } from 'lucide-react';
 import { SectionCard, SectionHeader } from '../../ui/AppUi.jsx';
 import { formatMinorAsInput, parseMoneyInputToMinor, sanitizeMoneyInput } from '../../../utils/money.js';
+import { isAndroidDesign } from '../../../app/platformDesign.js';
+import CategoryIcon from '../../ui/CategoryIcon.jsx';
 
 export default function AccountsOverviewPanel({
   theme,
@@ -71,13 +73,20 @@ export default function AccountsOverviewPanel({
   };
 
   return (
-    <SectionCard theme={theme} className="space-y-2 p-3" tone="utility">
+    <SectionCard theme={theme} className="mc-accounts-overview space-y-2 p-3" tone="utility">
       <SectionHeader eyebrow={text.accounts} title={text.balancesByAccount} compact />
 
       <div className="space-y-1.5">
         {store.accounts.map((account, index) => (
-          <div key={account.id} className="rounded-[16px] border px-3 py-1.5" style={softPanelStyle}>
-            <div className="flex items-start justify-between gap-3">
+          <div key={account.id} className="mc-account-card rounded-[16px] border px-3 py-1.5" style={softPanelStyle}>
+            <div className="mc-account-overview flex items-start justify-between gap-3">
+              {isAndroidDesign() ? (
+                <CategoryIcon
+                  appearance={
+                    { safety: 'reserve', capital: 'capital', sadaka: 'charity' }[account.systemKey] || 'wallet'
+                  }
+                />
+              ) : null}
               <div className="min-w-0">
                 {editingAccountId === account.id ? (
                   <div className="flex items-center gap-1.5">
@@ -123,7 +132,7 @@ export default function AccountsOverviewPanel({
                     ) : null}
                   </div>
                 )}
-                <div className="mt-1 flex flex-wrap items-center gap-1">
+                <div className="mc-account-tools mt-1 flex flex-wrap items-center gap-1">
                   {!account.isPrimary && account.includeInSpendable ? (
                     <button
                       type="button"
@@ -190,7 +199,7 @@ export default function AccountsOverviewPanel({
                   ) : null}
                 </div>
               </div>
-              <span className="shrink-0 max-w-[42%] text-right text-[12px] font-numbers font-black [overflow-wrap:anywhere]">
+              <span className="mc-account-amount shrink-0 max-w-[42%] text-right text-[12px] font-numbers font-black [overflow-wrap:anywhere]">
                 {fmt(account.balance)}
               </span>
             </div>
@@ -235,7 +244,7 @@ export default function AccountsOverviewPanel({
         ))}
       </div>
 
-      <div className="rounded-[16px] border px-3 py-2" style={softPanelStyle}>
+      <div className="mc-recent-transfers rounded-[16px] border px-3 py-2" style={softPanelStyle}>
         <button
           type="button"
           onClick={() => setIsTransfersOpen((value) => !value)}

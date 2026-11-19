@@ -36,7 +36,7 @@ export function useTransactionActions({ store, isEnglish }) {
         : isGroup
           ? isEnglish
             ? `Delete the income "${root.category}" with its sadaka, safety and capital shares, and roll them back?`
-            : `Удалить доход «${root.category}» вместе с долями садаки, подушки и капитала и откатить их?`
+            : `Удалить доход «${root.category}» вместе с долями садаки, финансового запаса и капитала и откатить их?`
           : isEnglish
             ? 'Delete this operation and roll back its effect on balances?'
             : 'Удалить эту операцию и откатить её влияние на балансы?',

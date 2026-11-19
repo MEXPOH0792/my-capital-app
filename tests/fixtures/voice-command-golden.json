@@ -1,0 +1,90 @@
+{
+  "accounts": [
+    { "id": "primary", "name": "Основная карта", "includeInSpendable": true },
+    { "id": "reserve", "name": "Финансовый запас", "includeInSpendable": false }
+  ],
+  "categories": [
+    { "type": "income", "name": "Зарплата" },
+    { "type": "expense", "name": "Продукты" },
+    { "type": "expense", "name": "Такси" },
+    { "type": "expense", "name": "Такси работа" },
+    { "type": "expense", "name": "Аптека" }
+  ],
+  "cases": [
+    {
+      "id": "income_numeric_thousands",
+      "transcript": "доход 10 тысяч зарплата",
+      "expected": { "type": "income", "amountMinor": 1000000, "category": "Зарплата", "accountId": "" }
+    },
+    {
+      "id": "income_word_thousands",
+      "transcript": "доход десять тысяч зарплата",
+      "expected": { "type": "income", "amountMinor": 1000000, "category": "Зарплата", "accountId": "" }
+    },
+    {
+      "id": "honor_grouped_expense",
+      "transcript": "расход 1 250 продукты",
+      "expected": { "type": "expense", "amountMinor": 125000, "category": "Продукты", "accountId": "" }
+    },
+    {
+      "id": "compact_honor_expense",
+      "transcript": "расход 1200руб такси",
+      "expected": { "type": "expense", "amountMinor": 120000, "category": "Такси", "accountId": "" }
+    },
+    {
+      "id": "decimal_expense",
+      "transcript": "расход 349,90 аптека",
+      "expected": { "type": "expense", "amountMinor": 34990, "category": "Аптека", "accountId": "" }
+    },
+    {
+      "id": "spoken_account",
+      "transcript": "расход 500 продукты с основной карты",
+      "expected": { "type": "expense", "amountMinor": 50000, "category": "Продукты", "accountId": "primary" }
+    },
+    {
+      "id": "category_defines_type",
+      "transcript": "зарплата десять тысяч",
+      "expected": { "type": "income", "amountMinor": 1000000, "category": "Зарплата", "accountId": "" }
+    },
+    {
+      "id": "conflicting_type",
+      "transcript": "доход расход 1000",
+      "expected": { "type": "conflict", "amountMinor": 100000, "category": "", "accountId": "" }
+    },
+    {
+      "id": "missing_type",
+      "transcript": "1000 ремонт",
+      "expected": { "type": "unknown", "amountMinor": 100000, "category": "Ремонт", "accountId": "" }
+    },
+    {
+      "id": "negative_sign_rejected",
+      "transcript": "расход -500 продукты",
+      "expected": { "type": "expense", "amountMinor": 0, "category": "Продукты", "accountId": "" }
+    },
+    {
+      "id": "negative_word_rejected",
+      "transcript": "расход минус пятьсот продукты",
+      "expected": { "type": "expense", "amountMinor": 0, "category": "Продукты", "accountId": "" }
+    },
+    {
+      "id": "zero_rejected",
+      "transcript": "расход 0 продукты",
+      "expected": { "type": "expense", "amountMinor": 0, "category": "Продукты", "accountId": "" }
+    },
+    {
+      "id": "longest_similar_category_wins",
+      "transcript": "расход 500 такси работа",
+      "expected": { "type": "expense", "amountMinor": 50000, "category": "Такси работа", "accountId": "" }
+    },
+    {
+      "id": "amount_above_ceiling",
+      "transcript": "доход 99999999999999999 зарплата",
+      "expected": { "type": "income", "amountMinor": 0, "category": "Зарплата", "accountId": "" }
+    },
+    {
+      "id": "noise_without_amount",
+      "transcript": "совсем непонятный шум",
+      "expected": { "type": "unknown", "amountMinor": 0, "category": "Совсем непонятный шум", "accountId": "" }
+    }
+  ]
+}

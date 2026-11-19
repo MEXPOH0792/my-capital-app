@@ -45,6 +45,7 @@ export default function IncomeActionModal(props) {
         setTransactionCategoryForm={setTransactionCategoryForm}
         removeIncomePreset={removeIncomePreset}
         softPanelStyle={softPanelStyle}
+        transactions={store.transactions}
       />
       <IncomeDistributionSection
         allocationModes={allocationModes}

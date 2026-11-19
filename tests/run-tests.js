@@ -35,6 +35,7 @@ import './unit/app-shell-store.test.js';
 import './unit/storage-recovery.test.js';
 import './unit/security-policy.test.js';
 import './unit/family.test.js';
+import './unit/voice-expense.test.js';
 
 // Integration (full store + actions)
 import './integration/store-flow.test.js';

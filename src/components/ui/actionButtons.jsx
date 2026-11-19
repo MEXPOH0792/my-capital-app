@@ -1,4 +1,4 @@
-export function ActionButton({ label, icon: Icon, onClick, theme, color, compact = false }) {
+export function ActionButton({ label, icon: Icon, onClick, theme, color, compact = false, primary = false }) {
   const buttonClass = compact
     ? 'flex min-h-[56px] min-w-0 items-center justify-center gap-2 rounded-[16px] border px-3 py-3 active:scale-95 transition-all group'
     : 'flex flex-col items-center justify-center p-6 md:p-10 rounded-[22px] md:rounded-[22px] border gap-3 md:gap-4 active:scale-95 transition-all group';
@@ -14,7 +14,8 @@ export function ActionButton({ label, icon: Icon, onClick, theme, color, compact
       type="button"
       aria-label={label}
       onClick={onClick}
-      className={buttonClass}
+      className={`mc-action-button ${buttonClass}`}
+      data-primary={primary}
       style={{ backgroundColor: theme.surface, borderColor: theme.border, boxShadow: theme.panelShadow }}
     >
       <div

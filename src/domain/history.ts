@@ -65,6 +65,25 @@ export const isReportedIncome = (transaction: Transaction | null | undefined): b
 export const isReportedExpense = (transaction: Transaction | null | undefined): boolean =>
   transaction?.type === 'expense' && !isDebtFlow(transaction) && !transaction.meta?.system;
 
+/** Total real spending for the device-local calendar day, in minor units. */
+export const getTodayReportedExpense = (
+  transactions: Transaction[] | null | undefined,
+  nowMs: number = Date.now(),
+): number => {
+  const now = new Date(nowMs);
+  if (Number.isNaN(now.getTime())) return 0;
+  const start = new Date(now.getFullYear(), now.getMonth(), now.getDate()).getTime();
+  const end = new Date(now.getFullYear(), now.getMonth(), now.getDate() + 1).getTime();
+
+  return (Array.isArray(transactions) ? transactions : []).reduce((total, transaction) => {
+    if (!isReportedExpense(transaction)) return total;
+    const timestamp = new Date(transaction.date).getTime();
+    if (Number.isNaN(timestamp) || timestamp < start || timestamp >= end) return total;
+    const amount = Math.max(0, Math.round(Number(transaction.amount) || 0));
+    return Number.isSafeInteger(total + amount) ? total + amount : Number.MAX_SAFE_INTEGER;
+  }, 0);
+};
+
 /**
  * The automatic sadaka share. It stays on the sadaka account, so like the
  * safety and capital shares it is money set aside, not spent; reports list it

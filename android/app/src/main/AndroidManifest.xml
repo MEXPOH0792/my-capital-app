@@ -1,6 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
 
+    <uses-permission android:name="android.permission.RECORD_AUDIO" />
+
+    <queries>
+        <intent>
+            <action android:name="android.speech.RecognitionService" />
+        </intent>
+    </queries>
+
     <application
         android:allowBackup="false"
         android:icon="@mipmap/ic_launcher"
@@ -35,11 +43,19 @@
 
         </activity>
 
+        <activity
+            android:name=".VoiceExpenseActivity"
+            android:theme="@style/AppTheme.VoiceCapture"
+            android:exported="false"
+            android:excludeFromRecents="true"
+            android:launchMode="singleTop"
+            android:taskAffinity="io.mykapital.app.voice" />
+
         <!-- Home-screen widget. No runtime permission required; the widget
              only reads from a local SharedPreferences file mirrored by the
              JS layer. -->
         <receiver
-            android:name=".CapitalWidgetProvider"
+            android:name=".CapitalWidgetReceiver"
             android:label="@string/widget_label"
             android:exported="true">
             <intent-filter>
@@ -63,7 +79,8 @@
 
     <!-- Permissions -->
     <!--
-      Personal Capital is fully offline: no network sync, no telemetry, no
+      Personal Capital is fully offline: no network sync, no telemetry, and
+      speech recognition uses Android's on-device recognizer only. There are no
       remote fonts (see public/fonts/), no Capacitor LiveReload in release
       builds. We deliberately do not declare android.permission.INTERNET so
       the app cannot make outbound connections even if a third-party library

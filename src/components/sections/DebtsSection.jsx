@@ -38,9 +38,12 @@ export default function DebtsSection({
         <button
           type="button"
           onClick={onOpenNewDebt}
-          className="flex h-8 w-8 items-center justify-center rounded-[12px] bg-emerald-600 text-white shadow-lg shadow-emerald-600/20 transition-all active:scale-95"
+          aria-label={isEnglish ? 'Add debt' : 'Добавить долг'}
+          className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full transition-transform active:scale-95"
         >
-          <Plus size={16} />
+          <span className="flex h-8 w-8 items-center justify-center rounded-full bg-emerald-600 text-white">
+            <Plus size={18} aria-hidden="true" />
+          </span>
         </button>
       </div>
 
@@ -66,8 +69,9 @@ export default function DebtsSection({
       <div className="space-y-1.5">
         {sortedDebts.length === 0 ? (
           <EmptyState
+            compact
             text={copy.debts.empty}
-            hint={isEnglish ? 'Add a debt or receivable.' : 'Добавь долг или сумму, которую должны тебе.'}
+            hint={isEnglish ? 'Tap + to add one.' : 'Нажми +, чтобы добавить.'}
           />
         ) : (
           sortedDebts.map((debt) => (

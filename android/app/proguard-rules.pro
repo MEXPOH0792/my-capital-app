@@ -33,3 +33,8 @@
     public static **[] values();
     public static ** valueOf(java.lang.String);
 }
+
+# Glance instantiates ActionCallback implementations reflectively.
+-keep class * implements androidx.glance.appwidget.action.ActionCallback {
+    public <init>();
+}

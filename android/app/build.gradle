@@ -1,6 +1,7 @@
 import groovy.json.JsonSlurper
 
 apply plugin: 'com.android.application'
+apply plugin: 'org.jetbrains.kotlin.plugin.compose'
 
 def appPackageJson = new JsonSlurper().parse(file('../../package.json'))
 def appVersionName = appPackageJson.version
@@ -38,6 +39,14 @@ android {
         density { enableSplit = true }
         abi { enableSplit = true }
     }
+    sourceSets {
+        test {
+            resources.srcDir file('../../tests/fixtures')
+        }
+    }
+    buildFeatures {
+        compose = true
+    }
 }
 
 repositories {
@@ -53,8 +62,13 @@ dependencies {
     implementation "androidx.core:core-splashscreen:$coreSplashScreenVersion"
     implementation "androidx.biometric:biometric:1.2.0-alpha05"
     implementation "androidx.fragment:fragment:$androidxFragmentVersion"
+    implementation "androidx.glance:glance-appwidget:1.2.0"
+    implementation "androidx.glance:glance-material3:1.2.0"
+    implementation "androidx.compose.material3:material3:1.3.2"
+    implementation "androidx.datastore:datastore-preferences-core:1.2.1"
     implementation project(':capacitor-android')
     testImplementation "junit:junit:$junitVersion"
+    testImplementation "org.json:json:20250517"
     androidTestImplementation "androidx.test.ext:junit:$androidxJunitVersion"
     androidTestImplementation "androidx.test.espresso:espresso-core:$androidxEspressoCoreVersion"
     implementation project(':capacitor-cordova-android-plugins')

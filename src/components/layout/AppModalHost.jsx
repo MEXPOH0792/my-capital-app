@@ -70,6 +70,8 @@ export default function AppModalHost({
         submitDebt={modalFlow.submitDebt}
         deleteSelectedDebt={modalFlow.deleteSelectedDebt}
         openTransactionEditModal={modalFlow.openTransactionEditModal}
+        voiceExpense={modalFlow.voiceExpense}
+        startVoiceExpense={modalFlow.startVoiceExpense}
       />
     </Suspense>
   );

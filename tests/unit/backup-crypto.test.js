@@ -56,9 +56,10 @@ addTest('decryptBackup rejects a non-envelope input with BAD_ENVELOPE', async ()
 addTest('decryptBackup rejects a tampered ciphertext with BAD_PASSPHRASE', async () => {
   const envelope = await encryptBackup(samplePayload, 'pw');
   // Flip a character in base64 ciphertext — GCM tag check fails.
+  const changedFirstCharacter = envelope.cipher.ct.startsWith('A') ? 'B' : 'A';
   const tampered = {
     ...envelope,
-    cipher: { ...envelope.cipher, ct: `A${envelope.cipher.ct.slice(1)}` },
+    cipher: { ...envelope.cipher, ct: `${changedFirstCharacter}${envelope.cipher.ct.slice(1)}` },
   };
   await assert.rejects(
     () => decryptBackup(tampered, 'pw'),

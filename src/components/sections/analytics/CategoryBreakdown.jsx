@@ -1,6 +1,8 @@
 import { useMemo, useState } from 'react';
 import { PieChart } from 'lucide-react';
 import { SectionCard } from '../../ui/primitives.jsx';
+import CategoryIcon from '../../ui/CategoryIcon.jsx';
+import { isAndroidDesign } from '../../../app/platformDesign.js';
 
 /** Rows shown before the "show all" expander kicks in. */
 const VISIBLE_CATEGORY_ROWS = 6;
@@ -85,7 +87,17 @@ export default function CategoryBreakdown({
             return (
               <div key={item.category} className="space-y-1">
                 <div className="flex items-baseline justify-between gap-2">
-                  <p className="min-w-0 truncate text-[11px] font-semibold">{item.category}</p>
+                  <div className="flex min-w-0 items-center gap-2">
+                    {isAndroidDesign() ? (
+                      <CategoryIcon
+                        category={item.category}
+                        type={mode}
+                        appearance={mode === 'account' ? 'wallet' : item.appearance}
+                        compact
+                      />
+                    ) : null}
+                    <p className="min-w-0 truncate text-[11px] font-semibold">{item.category}</p>
+                  </div>
                   <div className="flex shrink-0 items-baseline gap-1.5">
                     <span className="font-numbers text-[11px] font-extrabold tabular-nums">{fmt(item.amount)}</span>
                     <span className="text-[10px] font-semibold tabular-nums opacity-55">{share}%</span>

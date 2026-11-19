@@ -1,6 +1,7 @@
 import { MONEY_VERSION } from '../utils/money.js';
 import { APP_VERSION } from '../app/appVersion.js';
 import { migrateBackupPayload } from './backupMigrations.js';
+import { assertBackupPayloadLimits } from './backupLimits.js';
 
 const isPlainObject = (value) => Boolean(value) && typeof value === 'object' && !Array.isArray(value);
 
@@ -91,6 +92,7 @@ const validateTransactionMeta = (meta, index) => {
   assertOptionalBoolean(meta.distributed, `transactions[${index}].meta.distributed`);
   assertOptionalString(meta.debtKind, `transactions[${index}].meta.debtKind`);
   assertOptionalString(meta.system, `transactions[${index}].meta.system`);
+  assertOptionalString(meta.categoryAppearance, `transactions[${index}].meta.categoryAppearance`);
 
   assertOptionalArray(meta.effects, `transactions[${index}].meta.effects`);
   meta.effects?.forEach((effect, effectIndex) => {
@@ -274,6 +276,7 @@ export const createSignedBackupPayload = async (state, keyHex) => {
 };
 
 export const parseBackupPayload = (payload) => {
+  assertBackupPayloadLimits(payload);
   assert(isPlainObject(payload), 'Backup payload must be an object');
   assert(typeof payload.version === 'number' && Number.isInteger(payload.version), 'Backup version is required');
   // Apply the migration chain so a v1 file imported into the current build is

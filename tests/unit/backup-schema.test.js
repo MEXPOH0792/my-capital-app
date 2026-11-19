@@ -6,6 +6,7 @@ import { createBackupPayload, parseBackupPayload } from '../../src/store/backupS
 import { MONEY_VERSION } from '../../src/utils/money.js';
 import { PIN_STORAGE_KEY } from '../../src/utils/secureBridgeStorage.js';
 import { createDefaultState } from '../../src/store/stateHelpers.js';
+import { MAX_BACKUP_ARRAY_ITEMS, MAX_BACKUP_DEPTH } from '../../src/store/backupLimits.js';
 
 addTest('backup schema rejects payload without version', () => {
   assert.throws(() => parseBackupPayload({ state: {} }), /Backup version is required/);
@@ -70,6 +71,46 @@ addTest('backup schema accepts custom account with null systemKey', () => {
       },
     }),
   );
+});
+
+addTest('backup schema rejects nesting deeper than the import limit', () => {
+  let nested = 'end';
+  for (let index = 0; index <= MAX_BACKUP_DEPTH; index += 1) nested = { next: nested };
+
+  assert.throws(
+    () =>
+      parseBackupPayload({
+        version: MONEY_VERSION,
+        appVersion: APP_VERSION,
+        exportedAt: new Date().toISOString(),
+        state: { unknownFutureField: nested },
+      }),
+    /nesting is too deep/,
+  );
+});
+
+addTest('backup schema rejects an excessively large array before sanitizing it', () => {
+  assert.throws(
+    () =>
+      parseBackupPayload({
+        version: MONEY_VERSION,
+        appVersion: APP_VERSION,
+        exportedAt: new Date().toISOString(),
+        state: { transactions: new Array(MAX_BACKUP_ARRAY_ITEMS + 1) },
+      }),
+    /excessively large list/,
+  );
+});
+
+addTest('import drops unknown state fields instead of persisting them', () => {
+  resetStore();
+  useStore.getState().importData({
+    version: MONEY_VERSION,
+    appVersion: APP_VERSION,
+    exportedAt: new Date().toISOString(),
+    state: { language: 'ru', injectedAction: 'must-not-survive' },
+  });
+  assert.equal('injectedAction' in useStore.getState(), false);
 });
 
 // Touch createBackupPayload to keep the import surface intact when this file is

@@ -1,0 +1,657 @@
+/* Approved Brainbox-derived presentation, isolated from the Web/PWA design.
+   Tree SVG, its colours, geometry and animation are deliberately excluded. */
+:root[data-design='android'] {
+  --mc-canvas: #101714;
+  --mc-surface: #1d2722;
+  --mc-ink: #f5f7f5;
+  --mc-secondary: #a9b8ae;
+  --mc-positive: #57ce93;
+  --mc-negative: #ff9595;
+  --mc-warning: #f2c56b;
+  --mc-focus: #57ce93;
+  --mc-action: #57ce93;
+  --mc-on-action: #10251a;
+  --mc-border: #34463b;
+  --mc-border-soft: #29382f;
+  --mc-soft: #1d2722;
+  --mc-soft-faint: #18211c;
+  --mc-hover: #283b2f;
+  --mc-text-dim: #b9c7be;
+  --mc-knob: #b9c7be;
+  --mc-radius-control: 14px;
+  --mc-radius-panel: 20px;
+  --mc-radius-icon: 14px;
+  --mc-icon-size: 44px;
+  --mc-touch: 48px;
+  --mc-type-caption: 0.75rem;
+  --mc-type-meta: 0.8125rem;
+  --mc-type-body: 0.875rem;
+  --mc-type-control: 0.9375rem;
+  --mc-type-section: 1.0625rem;
+  --mc-type-title: 1.375rem;
+  --mc-type-page: 1.875rem;
+  --mc-space-1: 4px;
+  --mc-space-2: 8px;
+  --mc-space-3: 12px;
+  --mc-space-4: 16px;
+  --mc-space-5: 20px;
+  --mc-cat-sage: #bbdfb0;
+  --mc-cat-sage-bg: #2d4932;
+  --mc-cat-caramel: #f5d09b;
+  --mc-cat-caramel-bg: #4b3822;
+  --mc-cat-blue: #acd8f5;
+  --mc-cat-blue-bg: #263f50;
+  --mc-cat-sand: #ead6a2;
+  --mc-cat-sand-bg: #453e28;
+  --mc-cat-coral: #ffc2bb;
+  --mc-cat-coral-bg: #513230;
+  --mc-cat-lilac: #dfc9f5;
+  --mc-cat-lilac-bg: #423450;
+  --mc-cat-teal: #a8e4dc;
+  --mc-cat-teal-bg: #254742;
+  --mc-cat-neutral: #c1cec6;
+  --mc-cat-neutral-bg: #2b3931;
+}
+:root[data-design='android'][data-theme='light'] {
+  --mc-canvas: #f6f8f6;
+  --mc-surface: #fff;
+  --mc-ink: #14251c;
+  --mc-secondary: #586b5f;
+  --mc-positive: #08784b;
+  --mc-negative: #b93434;
+  --mc-warning: #916308;
+  --mc-focus: #08784b;
+  --mc-action: #08784b;
+  --mc-on-action: #fff;
+  --mc-border: #d8e2da;
+  --mc-border-soft: #e3eae5;
+  --mc-soft: #edf2ee;
+  --mc-soft-faint: #f0f4f1;
+  --mc-hover: #e4ede6;
+  --mc-text-dim: #586b5f;
+  --mc-knob: #586b5f;
+  --mc-cat-sage: #355e32;
+  --mc-cat-sage-bg: #dfedda;
+  --mc-cat-caramel: #78511e;
+  --mc-cat-caramel-bg: #f5e7d5;
+  --mc-cat-blue: #235d83;
+  --mc-cat-blue-bg: #dfedf8;
+  --mc-cat-sand: #725b26;
+  --mc-cat-sand-bg: #f2ead6;
+  --mc-cat-coral: #993f37;
+  --mc-cat-coral-bg: #f8e3de;
+  --mc-cat-lilac: #694286;
+  --mc-cat-lilac-bg: #eee4f5;
+  --mc-cat-teal: #24675f;
+  --mc-cat-teal-bg: #daf0eb;
+  --mc-cat-neutral: #50665a;
+  --mc-cat-neutral-bg: #e7ede9;
+}
+
+[data-design='android'] body {
+  color: var(--mc-ink);
+}
+[data-design='android'] .mc-page-content {
+  padding: 18px 20px 32px;
+}
+[data-design='android'] .mc-page-content > .space-y-3 > * + * {
+  margin-top: 20px;
+}
+[data-design='android'] h2 {
+  font-size: var(--mc-type-page);
+  line-height: 1.2;
+  letter-spacing: -0.035em;
+}
+[data-design='android'] :where(.text-\[9px\], .text-\[10px\], .text-\[11px\]):not([role='img'] *) {
+  font-size: var(--mc-type-meta);
+  line-height: 1.45;
+}
+[data-design='android'] .text-\[12px\]:not([role='img'] *) {
+  font-size: var(--mc-type-caption);
+}
+[data-design='android'] :where(.text-\[13px\], .text-xs):not([role='img'] *) {
+  font-size: var(--mc-type-meta);
+}
+[data-design='android'] :where(.text-\[14px\], .text-sm):not([role='img'] *) {
+  font-size: var(--mc-type-body);
+}
+[data-design='android'] :is(.opacity-40, .opacity-55, .opacity-70, .opacity-80):not(:disabled):not([role='img'] *) {
+  opacity: 1;
+}
+[data-design='android'] :is(p, span).opacity-55:not([role='img'] *),
+[data-design='android'] :is(p, span).opacity-40:not([role='img'] *) {
+  color: var(--mc-secondary);
+}
+[data-design='android'] .font-black:not([role='img'] *) {
+  font-weight: 700;
+}
+[data-design='android'] .transition-all:not([role='img'] *) {
+  transition-property: color, background-color, border-color, opacity, transform;
+}
+[data-design='android'] .font-numbers {
+  font-variant-numeric: tabular-nums;
+}
+
+/* Legacy one-off radii resolve to two semantic tiers on Android. Pills and
+   circular controls keep rounded-full unchanged. */
+[data-design='android'] :where(.rounded-\[12px\], .rounded-\[14px\], .rounded-\[16px\], .rounded-xl) {
+  border-radius: var(--mc-radius-control);
+}
+[data-design='android'] :where(.rounded-\[22px\], .rounded-2xl, .rounded-3xl) {
+  border-radius: var(--mc-radius-panel);
+}
+
+/* Controls use one radius and a genuine square touch area for icon buttons. */
+[data-design='android'] button {
+  min-height: var(--mc-touch);
+  min-width: var(--mc-touch);
+}
+[data-design='android'] button:is(.rounded-full, .rounded-2xl, .rounded-xl, .rounded-\[12px\], .rounded-\[16px\]) {
+  border-radius: var(--mc-radius-control);
+}
+[data-design='android'] button:is(.w-5, .w-6, .w-8, .w-11, .w-12) {
+  width: var(--mc-touch);
+  height: var(--mc-touch);
+  flex-shrink: 0;
+  padding: 0;
+}
+[data-design='android'] button:is(.w-5, .w-6, .w-8, .w-11, .w-12) > svg {
+  width: 20px;
+  height: 20px;
+}
+[data-design='android'] button:disabled {
+  opacity: 0.45;
+}
+[data-design='android'] button:is(.bg-emerald-600, .bg-emerald-500) {
+  background: var(--mc-action);
+  color: var(--mc-on-action);
+  box-shadow: none;
+  font-size: var(--mc-type-control);
+}
+[data-design='android'] :where(input:not([type='checkbox']):not([type='radio']):not([type='range']), select, textarea) {
+  border-radius: var(--mc-radius-control);
+  min-height: 52px;
+  font-size: 1rem;
+  font-weight: 500;
+  line-height: 1.4;
+  padding: 12px 14px;
+  caret-color: var(--mc-positive);
+}
+[data-design='android'] input::placeholder,
+[data-design='android'] textarea::placeholder {
+  color: var(--mc-secondary);
+  opacity: 1;
+}
+[data-design='android'] :focus-visible {
+  outline: 2px solid var(--mc-focus);
+  outline-offset: 3px;
+}
+[data-design='android'] .mc-section-card {
+  padding: 18px;
+  border-radius: var(--mc-radius-panel);
+}
+[data-design='android'] .mc-section-card > * + * {
+  margin-top: 14px;
+}
+[data-design='android'] .mc-section-heading > .font-bold {
+  font-size: var(--mc-type-section);
+  line-height: 1.4;
+}
+[data-design='android'] .mc-section-heading > p:first-child {
+  color: var(--mc-secondary);
+}
+
+/* Category colour belongs to the symbol, never to the transaction type. */
+[data-design='android'] .mc-category-icon {
+  --category-ink: var(--mc-cat-neutral);
+  --category-bg: var(--mc-cat-neutral-bg);
+  display: inline-flex;
+  flex: 0 0 var(--mc-icon-size);
+  width: var(--mc-icon-size);
+  height: var(--mc-icon-size);
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--mc-radius-icon);
+  background: var(--category-bg);
+  color: var(--category-ink);
+}
+[data-design='android'] .mc-category-icon > svg {
+  width: 24px;
+  height: 24px;
+  flex-shrink: 0;
+}
+[data-design='android'] .mc-category-icon--compact {
+  --mc-icon-size: 32px;
+  border-radius: 10px;
+}
+[data-design='android'] .mc-category-icon--compact > svg {
+  width: 20px;
+  height: 20px;
+}
+[data-design='android'] [data-category='groceries'],
+[data-design='android'] [data-category='capital'] {
+  --category-ink: var(--mc-cat-sage);
+  --category-bg: var(--mc-cat-sage-bg);
+}
+[data-design='android'] [data-category='cafe'] {
+  --category-ink: var(--mc-cat-caramel);
+  --category-bg: var(--mc-cat-caramel-bg);
+}
+[data-design='android']
+  :is([data-category='transport'], [data-category='education'], [data-category='mobile'], [data-category='business']) {
+  --category-ink: var(--mc-cat-blue);
+  --category-bg: var(--mc-cat-blue-bg);
+}
+[data-design='android'] :is([data-category='home'], [data-category='utilities'], [data-category='debt']) {
+  --category-ink: var(--mc-cat-sand);
+  --category-bg: var(--mc-cat-sand-bg);
+}
+[data-design='android'] :is([data-category='health'], [data-category='kids']) {
+  --category-ink: var(--mc-cat-coral);
+  --category-bg: var(--mc-cat-coral-bg);
+}
+[data-design='android'] :is([data-category='shopping'], [data-category='gift'], [data-category='leisure']) {
+  --category-ink: var(--mc-cat-lilac);
+  --category-bg: var(--mc-cat-lilac-bg);
+}
+[data-design='android']
+  :is(
+    [data-category='charity'],
+    [data-category='income'],
+    [data-category='salary'],
+    [data-category='interest'],
+    [data-category='reserve']
+  ) {
+  --category-ink: var(--mc-cat-teal);
+  --category-bg: var(--mc-cat-teal-bg);
+}
+
+/* Home: retain the tree component and its dimensions unchanged. */
+[data-design='android'] .mc-balance-main {
+  min-width: 0;
+}
+[data-design='android'] .mc-balance-value {
+  font-size: clamp(1.75rem, 8vw, 2.5rem);
+  padding: 0;
+}
+[data-design='android'] .mc-action-button {
+  min-height: 56px;
+  border-radius: var(--mc-radius-control);
+}
+[data-design='android'] .mc-action-button > div {
+  padding: 0;
+  background: none !important;
+  box-shadow: none !important;
+  color: inherit !important;
+}
+[data-design='android'] .mc-action-button > span {
+  opacity: 1;
+  font-size: 1rem;
+}
+[data-design='android'] .mc-action-button[data-primary='true'] {
+  background: var(--mc-action) !important;
+  border-color: var(--mc-action) !important;
+  color: var(--mc-on-action);
+}
+[data-design='android'] .mc-focus-strip {
+  margin-top: 14px;
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  background: transparent !important;
+}
+[data-design='android'] .mc-focus-strip > .font-display {
+  margin-top: 4px;
+  font-size: 0.9375rem;
+  line-height: 1.35;
+}
+[data-design='android'] .mc-focus-strip > div:first-child {
+  gap: 6px;
+}
+[data-design='android'] .mc-focus-strip > div:first-child > div {
+  padding: 4px;
+}
+[data-design='android'] .mc-focus-strip > div:first-child > p {
+  font-size: 0.8125rem;
+}
+[data-design='android'] .mc-focus-meta {
+  margin-top: 8px;
+  border-top: 0;
+  padding-top: 0;
+  font-size: 0.8125rem;
+}
+[data-design='android'] .mc-focus-strip > p:last-child {
+  margin-top: 2px;
+  font-size: 0.8125rem;
+}
+
+/* History: genuine buttons retain keyboard access; delete has its own target. */
+[data-design='android'] .mc-history-swipe {
+  position: relative;
+  overflow: hidden;
+}
+[data-design='android'] .mc-history-swipe-action {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: end;
+  padding: 16px;
+  color: var(--mc-negative);
+  background: var(--mc-soft);
+}
+[data-design='android'] .mc-history-row {
+  position: relative;
+  display: flex;
+  align-items: center;
+  background: var(--mc-canvas);
+  border-bottom: 1px solid var(--mc-border-soft);
+  touch-action: pan-y;
+}
+[data-design='android'] .mc-history-open {
+  min-width: 0;
+  flex: 1;
+  display: grid;
+  grid-template-columns: 44px minmax(0, 1fr) minmax(0, auto);
+  align-items: center;
+  gap: 12px;
+  min-height: 80px;
+  padding: 12px 0;
+  text-align: left;
+}
+[data-design='android'] .mc-history-copy {
+  display: grid;
+  gap: 4px;
+  min-width: 0;
+}
+[data-design='android'] .mc-history-category {
+  font-size: 0.9375rem;
+  font-weight: 650;
+  overflow-wrap: anywhere;
+}
+[data-design='android'] .mc-history-meta {
+  font-size: 0.75rem;
+  color: var(--mc-secondary);
+  line-height: 1.5;
+  overflow-wrap: anywhere;
+}
+[data-design='android'] .mc-history-amount {
+  max-width: 112px;
+  text-align: right;
+  font-size: 0.9375rem;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  overflow-wrap: anywhere;
+}
+[data-design='android'] .mc-history-amount--income {
+  color: var(--mc-positive);
+}
+[data-design='android'] .mc-history-delete {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: var(--mc-secondary);
+}
+
+/* Settings use section separation rather than nested decorative boxes. */
+[data-design='android'] .mc-settings > .mc-section-card:first-child {
+  padding: 0;
+  border: 0;
+  background: transparent !important;
+}
+[data-design='android'] .mc-settings > .mc-section-card:first-child > .mc-section-heading {
+  display: none;
+}
+[data-design='android'] .mc-settings > .mc-section-card:first-child > .grid > .border {
+  border: 0;
+  border-bottom: 1px solid var(--mc-border);
+  border-radius: 0;
+  padding: 16px 0;
+  background: transparent !important;
+}
+[data-design='android'] .mc-settings-label {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 0.9375rem;
+}
+[data-design='android'] .mc-settings-label > svg {
+  flex-shrink: 0;
+  color: var(--mc-secondary);
+}
+
+[data-design='android'] .mc-account-card {
+  padding: 12px 0;
+  border: 0;
+  border-bottom: 1px solid var(--mc-border-soft);
+  border-radius: 0;
+  background: transparent !important;
+}
+[data-design='android'] .mc-account-overview {
+  display: grid;
+  grid-template-columns: 44px minmax(0, 1fr) minmax(0, auto);
+  align-items: start;
+  gap: 12px;
+}
+[data-design='android'] .mc-account-amount {
+  grid-column: 3;
+  grid-row: 1;
+  max-width: none;
+  text-align: right;
+  font-size: 1rem;
+}
+[data-design='android'] .mc-account-tools {
+  gap: 4px;
+}
+[data-design='android'] .mc-account-tools button {
+  border-color: transparent !important;
+}
+[data-design='android'] .mc-accounts-overview {
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  background: transparent !important;
+  box-shadow: none !important;
+}
+[data-design='android'] .mc-accounts-overview > .mc-section-heading > p:first-child {
+  display: none;
+}
+[data-design='android'] .mc-recent-transfers {
+  padding-inline: 0;
+  border: 0;
+  border-radius: 0;
+  background: transparent !important;
+}
+
+/* Transaction sheets stay dense enough for one-handed entry while every
+   interactive target remains at least 48px. */
+[data-design='android'] .mc-modal-surface {
+  box-sizing: border-box;
+  width: 100%;
+  min-width: 0;
+  max-width: 100vw;
+  overflow-x: hidden;
+  padding: 18px 16px calc(18px + var(--safe-bottom));
+  border-radius: 24px 24px 0 0;
+}
+[data-design='android'] .mc-sheet-pop {
+  border-radius: 24px;
+  max-height: calc(100dvh - 32px - var(--safe-top));
+}
+[data-design='android'] .mc-modal-close {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-left: auto;
+  margin-bottom: 0;
+  border-radius: var(--mc-radius-control);
+  background: var(--mc-soft);
+}
+[data-design='android'] .mc-modal-title {
+  text-align: left;
+  font-size: var(--mc-type-title);
+  font-weight: 700;
+  line-height: 1.25;
+  color: var(--mc-ink);
+}
+[data-design='android'] .mc-modal-surface .space-y-3 > * + * {
+  margin-top: 12px;
+}
+[data-design='android'] input.mc-amount-input {
+  padding: 8px 0;
+  font-size: clamp(1.9rem, 9vw, 2.5rem);
+  font-weight: 750;
+  text-align: center;
+}
+[data-design='android'] .mc-submit-button {
+  min-height: 48px;
+}
+[data-design='android'] .mc-category-picker {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 6px;
+}
+[data-design='android'] .mc-category-choice {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 8px;
+  min-height: 48px;
+  text-align: left;
+  font-size: var(--mc-type-meta);
+}
+[data-design='android'] .mc-category-choice[aria-pressed='true'] {
+  border-color: var(--mc-focus);
+  background: var(--mc-hover);
+  color: var(--mc-ink);
+}
+[data-design='android'] .mc-category-icon-picker {
+  display: flex;
+  width: 100%;
+  min-width: 0;
+  max-width: 100%;
+  gap: var(--mc-space-2);
+  overflow-x: auto;
+  overflow-y: hidden;
+  padding: 2px 2px 6px;
+  scrollbar-width: none;
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior-inline: contain;
+  scroll-snap-type: x proximity;
+  touch-action: pan-x;
+}
+[data-design='android'] .mc-category-icon-fieldset {
+  width: 100%;
+  min-width: 0;
+  max-width: 100%;
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+[data-design='android'] .mc-category-icon-picker::-webkit-scrollbar {
+  display: none;
+}
+[data-design='android'] .mc-category-icon-choice {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 var(--mc-touch);
+  width: var(--mc-touch);
+  height: var(--mc-touch);
+  padding: 0;
+  border: 1px solid transparent;
+  border-radius: var(--mc-radius-control);
+  scroll-snap-align: start;
+}
+[data-design='android'] .mc-category-icon-choice .mc-category-icon {
+  --mc-icon-size: 36px;
+}
+[data-design='android'] .mc-category-icon-choice[aria-pressed='true'] {
+  border-color: var(--mc-focus);
+  background: var(--mc-hover);
+}
+[data-design='android'] .mc-modal-heading-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--mc-space-3);
+}
+[data-design='android'] .mc-modal-heading-row .mc-modal-title {
+  min-width: 0;
+  flex: 1;
+}
+[data-design='android'] .mc-voice-expense-button {
+  width: var(--mc-touch);
+  height: var(--mc-touch);
+  border: 1px solid var(--mc-border);
+  border-radius: var(--mc-radius-control);
+  background: var(--mc-soft);
+  color: var(--mc-positive);
+  box-shadow: none;
+}
+[data-design='android'] .mc-voice-expense-button:disabled {
+  border-color: var(--mc-negative);
+  color: var(--mc-negative);
+}
+[data-design='android'] .mc-voice-expense-status {
+  margin: 0;
+  color: var(--mc-secondary);
+  font-size: var(--mc-type-caption);
+  line-height: 1.45;
+}
+[data-design='android'] button[role='switch'] {
+  position: relative;
+  width: 56px;
+  height: 48px;
+  min-width: 56px;
+  border: 0;
+  background: transparent;
+}
+[data-design='android'] button[role='switch']::before {
+  content: '';
+  position: absolute;
+  inset: 9px 2px;
+  border-radius: 20px;
+  background: var(--mc-border);
+}
+[data-design='android'] button[role='switch'][aria-checked='true']::before {
+  background: var(--mc-action);
+}
+[data-design='android'] button[role='switch'] > span {
+  top: 13px;
+  left: 6px;
+  width: 22px;
+  height: 22px;
+  background: var(--mc-ink);
+}
+[data-design='android'] button[role='switch'][aria-checked='true'] > span {
+  left: 28px;
+  background: var(--mc-on-action);
+}
+@media (max-width: 359px) {
+  [data-design='android'] .mc-page-content {
+    padding-inline: 16px;
+  }
+  [data-design='android'] .mc-section-card {
+    padding: 14px;
+  }
+  [data-design='android'] .mc-history-open {
+    gap: 8px;
+    grid-template-columns: 40px minmax(0, 1fr);
+  }
+  [data-design='android'] .mc-history-open .mc-category-icon {
+    --mc-icon-size: 40px;
+    grid-row: span 2;
+  }
+  [data-design='android'] .mc-history-amount {
+    grid-column: 2;
+    max-width: none;
+    text-align: left;
+  }
+}
+@media (min-width: 640px) {
+  [data-design='android'] .mc-modal-surface {
+    max-width: 480px;
+    border-radius: 24px;
+  }
+}

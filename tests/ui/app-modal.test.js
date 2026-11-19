@@ -59,12 +59,16 @@ addTest('AppModal smoke renders expense modal with helper text and account selec
       debtForm: { title: '', amount: '', type: 'LIABILITY', addToBalance: true, bankName: '', interestRate: '' },
       setDebtForm: noop,
       createDebt: noop,
+      voiceExpense: { status: 'idle', transcript: '', message: '' },
+      startVoiceExpense: noop,
     }),
   );
 
   assert.match(html, /Spending/);
   assert.match(html, /Spend from/);
   assert.match(html, /Category: Groceries/);
+  assert.match(html, /aria-label="Enter expense by voice"/);
+  assert.doesNotMatch(html, /Say “Groceries/);
 });
 
 addTest('AppModal smoke renders compact income controls without account placement block', async () => {

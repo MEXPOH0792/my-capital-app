@@ -1,4 +1,6 @@
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useId, useRef, useState } from 'react';
+import { X } from 'lucide-react';
+import { isAndroidDesign } from '../../app/platformDesign.js';
 
 const getKeyboardInset = () => {
   if (typeof window === 'undefined' || !window.visualViewport) return 0;
@@ -11,19 +13,52 @@ const DISMISS_DRAG_THRESHOLD = 120;
 
 export default function ModalShell({ isDarkMode, theme, panelStyle, setModal, children, layout = 'sheet' }) {
   const isDialog = layout === 'dialog';
+  const androidDesign = isAndroidDesign();
+  const titleId = useId();
   const [keyboardInset, setKeyboardInset] = useState(0);
   const [dragY, setDragY] = useState(0);
   const [isClosing, setIsClosing] = useState(false);
   const sheetRef = useRef(null);
   const dragStateRef = useRef({ startY: 0, locked: false, cancelled: false });
 
+  useEffect(() => {
+    if (!androidDesign) return undefined;
+    const previousFocus = document.activeElement;
+    const sheet = sheetRef.current;
+    const heading = sheet?.querySelector('h3, h2');
+    if (heading) heading.id = titleId;
+    const focusable = () =>
+      [
+        ...sheet.querySelectorAll(
+          'button:not(:disabled), input:not(:disabled), select:not(:disabled), textarea:not(:disabled), [tabindex="0"]',
+        ),
+      ].filter((element) => element.getClientRects().length > 0);
+    // Focus the close control first, avoiding an unsolicited soft keyboard.
+    focusable()[0]?.focus();
+    const trapFocus = (event) => {
+      if (event.key !== 'Tab') return;
+      const items = focusable();
+      const first = items[0];
+      const last = items[items.length - 1];
+      if (event.shiftKey && document.activeElement === first) {
+        event.preventDefault();
+        last?.focus();
+      } else if (!event.shiftKey && document.activeElement === last) {
+        event.preventDefault();
+        first?.focus();
+      }
+    };
+    sheet.addEventListener('keydown', trapFocus);
+    return () => {
+      sheet.removeEventListener('keydown', trapFocus);
+      previousFocus?.focus?.();
+    };
+  }, [androidDesign, titleId]);
+
   // Visual viewport tracking so the sheet does not get covered by the soft
   // keyboard while the user types into an input.
   useEffect(() => {
-    if (typeof window === 'undefined' || !window.visualViewport || isDialog) {
-      setKeyboardInset(0);
-      return undefined;
-    }
+    if (typeof window === 'undefined' || !window.visualViewport || isDialog) return undefined;
 
     const syncKeyboardInset = () => setKeyboardInset(getKeyboardInset());
     syncKeyboardInset();
@@ -131,6 +166,7 @@ export default function ModalShell({ isDarkMode, theme, panelStyle, setModal, ch
       className={`fixed inset-0 z-[200] flex justify-center ${isDialog ? 'items-center p-4 sm:p-6' : 'items-end p-0 sm:items-center sm:p-6'}`}
       role="dialog"
       aria-modal="true"
+      aria-labelledby={androidDesign ? titleId : undefined}
     >
       <div
         className="absolute inset-0 transition-opacity duration-200"
@@ -144,16 +180,26 @@ export default function ModalShell({ isDarkMode, theme, panelStyle, setModal, ch
 
       <div
         ref={sheetRef}
-        className={`relative overflow-y-auto border ${
+        className={`mc-modal-surface relative overflow-y-auto border ${
           isDialog
             ? 'w-full max-w-sm rounded-[22px] px-4 py-4 sm:rounded-[22px] sm:px-5 sm:py-5 mc-sheet-pop'
             : 'mc-sheet-slide w-full max-w-none rounded-t-[22px] px-3.5 pb-[calc(env(safe-area-inset-bottom,0px)+0.75rem)] pt-3.5 safe-bottom sm:max-h-[90vh] sm:max-w-sm sm:rounded-[22px] sm:p-6'
         }`}
-        style={{ ...modalStyle, touchAction: isDialog ? 'auto' : 'pan-y' }}
+        style={{ ...modalStyle, touchAction: 'auto' }}
         onTouchStart={onTouchStart}
         onTouchMove={onTouchMove}
         onTouchEnd={onTouchEnd}
       >
+        {androidDesign ? (
+          <button
+            type="button"
+            className="mc-modal-close"
+            onClick={() => setModal(null)}
+            aria-label={document.documentElement.lang === 'en' ? 'Close' : 'Закрыть'}
+          >
+            <X size={22} aria-hidden="true" />
+          </button>
+        ) : null}
         {!isDialog ? (
           <div
             className="mx-auto mb-2.5 h-1.5 w-12 rounded-full sm:hidden"
