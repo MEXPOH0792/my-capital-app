@@ -8,14 +8,13 @@ const EMPTY_DEBT_FORM = {
   bankName: '',
   interestRate: '',
 };
-const EMPTY_CATEGORY_FORM = { preset: '', custom: '', appearance: '' };
 
 export function useModalState({ modal, spendableAccounts }) {
   const [inputValue, setInputValue] = useState('');
   const [selectedDebt, setSelectedDebt] = useState(null);
   const [selectedTransaction, setSelectedTransaction] = useState(null);
   const [debtForm, setDebtForm] = useState(EMPTY_DEBT_FORM);
-  const [transactionCategoryForm, setTransactionCategoryForm] = useState(EMPTY_CATEGORY_FORM);
+  const [transactionCategoryForm, setTransactionCategoryForm] = useState({ preset: '', custom: '' });
   const [selectedSpendAccountId, setSelectedSpendAccountId] = useState('');
 
   // Clear the form as the modal closes. Adjusting state during render is
@@ -25,7 +24,7 @@ export function useModalState({ modal, spendableAccounts }) {
   if (modal !== lastModal) {
     setLastModal(modal);
     if (!modal) {
-      setTransactionCategoryForm(EMPTY_CATEGORY_FORM);
+      setTransactionCategoryForm({ preset: '', custom: '' });
       setInputValue('');
       setSelectedDebt(null);
       setSelectedTransaction(null);
@@ -53,7 +52,7 @@ export function useModalState({ modal, spendableAccounts }) {
     setSelectedSpendAccountId,
     resetModalState: () => {
       setInputValue('');
-      setTransactionCategoryForm(EMPTY_CATEGORY_FORM);
+      setTransactionCategoryForm({ preset: '', custom: '' });
       setSelectedSpendAccountId('');
       setSelectedDebt(null);
       setSelectedTransaction(null);

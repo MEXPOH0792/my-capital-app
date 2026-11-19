@@ -69,8 +69,6 @@ export interface TransactionMeta {
   system?: 'reserve' | 'sadaka';
   /** Set on a display-only part (sadaka share, reserve) of a distributed income. */
   parentId?: string;
-  /** Optional visual chosen by the user for a custom category. */
-  categoryAppearance?: string;
 }
 
 export interface Transaction {

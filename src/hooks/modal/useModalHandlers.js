@@ -29,13 +29,12 @@ export function useModalHandlers({
   setSelectedTransaction,
   setSelectedSpendAccountId,
   setTransactionCategoryForm,
-  transactionCategoryForm,
   resolvedTransactionCategory,
   canSubmitAction,
 }) {
   const openTransactionModal = (type) => {
     markPerf(`modal:${type}:start`);
-    setTransactionCategoryForm({ preset: '', custom: '', appearance: '' });
+    setTransactionCategoryForm({ preset: '', custom: '' });
     setInputValue('');
     setSelectedDebt(null);
     setSelectedTransaction(null);
@@ -103,11 +102,7 @@ export function useModalHandlers({
     setSelectedSpendAccountId(
       transaction.type === 'expense' ? transaction.meta?.accountId || spendableAccounts[0]?.id || '' : '',
     );
-    setTransactionCategoryForm({
-      preset: '',
-      custom: transaction.category || '',
-      appearance: transaction.meta?.categoryAppearance || '',
-    });
+    setTransactionCategoryForm({ preset: '', custom: transaction.category || '' });
     setModal(nextModal);
   };
 
@@ -128,26 +123,21 @@ export function useModalHandlers({
       hapticError();
       return;
     }
-    const categoryAppearance = transactionCategoryForm?.appearance || '';
-    if (modal === 'income') store.addIncome(num, resolvedTransactionCategory, categoryAppearance);
+    if (modal === 'income') store.addIncome(num, resolvedTransactionCategory);
     if (modal === 'edit_income' && selectedTransaction) {
       store.updateIncomeTransaction(
         selectedTransaction.id,
         num,
         resolvedTransactionCategory || selectedTransaction.category,
-        categoryAppearance,
       );
     }
-    if (modal === 'expense') {
-      store.addExpense(num, resolvedTransactionCategory, selectedSpendAccountId, categoryAppearance);
-    }
+    if (modal === 'expense') store.addExpense(num, resolvedTransactionCategory, selectedSpendAccountId);
     if (modal === 'edit_expense' && selectedTransaction) {
       store.updateExpenseTransaction(
         selectedTransaction.id,
         num,
         resolvedTransactionCategory || selectedTransaction.category,
         selectedSpendAccountId || selectedTransaction.meta?.accountId,
-        categoryAppearance,
       );
     }
     if (modal === 'pay_debt' && selectedDebt) store.payDebt(selectedDebt.id, num, selectedSpendAccountId);

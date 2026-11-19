@@ -81,7 +81,7 @@ export default function OnboardingSetupScreen(props) {
       style={rootStyle}
     >
       <div className="mx-auto min-h-full w-full max-w-2xl pb-10">
-        <div className="mx-4 min-w-0 max-w-xl pb-2 pt-[calc(4px+var(--safe-top))] sm:mx-auto sm:px-6">
+        <div className="mx-auto w-full max-w-xl px-4 pb-2 pt-[calc(4px+var(--safe-top))] sm:px-6">
           <div className="mb-2 flex items-center justify-between gap-3">
             <div className="flex gap-2">
               <button
@@ -143,7 +143,9 @@ export default function OnboardingSetupScreen(props) {
                     }}
                   />
                 </div>
-                <p className={`mt-1 text-sm font-semibold ${index === currentStep ? 'opacity-100' : 'opacity-60'}`}>
+                <p
+                  className={`mt-1 text-sm font-semibold ${index === currentStep ? 'opacity-100' : 'opacity-60'}`}
+                >
                   {onboardingCopy.steps[index]}
                 </p>
               </button>
@@ -151,7 +153,7 @@ export default function OnboardingSetupScreen(props) {
           </div>
         </div>
 
-        <div className="mx-4 min-w-0 max-w-xl pb-[calc(28px+var(--safe-bottom))] sm:mx-auto sm:px-6">
+        <div className="mx-auto w-full max-w-xl px-4 pb-[calc(28px+var(--safe-bottom))] sm:px-6">
           {currentStep === 0 && (
             <StartStep
               copy={startCopy}

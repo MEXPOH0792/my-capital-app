@@ -1,10 +1,8 @@
 import { ALLOCATION_MODES } from '../../domain/finance.js';
 import { MIN_TARGET_MINOR, toSafeMinorAmount } from '../../utils/money.js';
-import { clearAllAppData } from '../../utils/secureBridgeStorage.js';
 import {
   createDefaultState,
   createId,
-  discardPendingPersistWrites,
   getCurrentMonthKey,
   syncTotalsFromAccounts,
   toSafeRate,
@@ -89,10 +87,4 @@ export const createOnboardingActions = (set) => ({
       isOnboardingCompleted: false,
       accounts: state.accounts.map((account) => ({ ...account, balance: 0 })),
     })),
-  eraseAllData: () => {
-    // A delayed pre-erase save must never be allowed to resurrect old data.
-    discardPendingPersistWrites();
-    clearAllAppData();
-    set({ ...createDefaultState(), isOnboardingCompleted: false });
-  },
 });

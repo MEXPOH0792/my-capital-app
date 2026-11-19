@@ -293,19 +293,6 @@ addTest('addExpense deducts from chosen spendable account', () => {
   assert.equal(state.transactions[0].meta.accountId, primary.id);
 });
 
-addTest('custom category appearance survives add and edit', () => {
-  resetStore();
-  completeBaseOnboarding({ startingBalances: { liquidPrimary: toMinorUnits(50000) } });
-
-  const primary = getSystemAccount('liquidPrimary');
-  useStore.getState().addExpense(toMinorUnits(1000), 'Питомец', primary.id, 'kids');
-  const expense = useStore.getState().transactions[0];
-  assert.equal(expense.meta.categoryAppearance, 'kids');
-
-  useStore.getState().updateExpenseTransaction(expense.id, toMinorUnits(1200), 'Питомец', primary.id, 'gift');
-  assert.equal(useStore.getState().transactions[0].meta.categoryAppearance, 'gift');
-});
-
 addTest('updateExpenseTransaction reapplies a manual expense safely', () => {
   resetStore();
   completeBaseOnboarding({

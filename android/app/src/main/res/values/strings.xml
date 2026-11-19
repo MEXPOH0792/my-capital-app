@@ -4,11 +4,6 @@
     <string name="title_activity_main">Личный Капитал</string>
     <string name="package_name">io.mykapital.app</string>
     <string name="custom_url_scheme">io.mykapital.app</string>
-    <string name="widget_description">Баланс и быстрый локальный голосовой ввод с домашнего экрана.</string>
+    <string name="widget_description">Быстрый доступ к балансу и кнопки «Доход» / «Расход» с домашнего экрана.</string>
     <string name="widget_label">Личный Капитал</string>
-    <string name="widget_voice_expense">Добавить операцию голосом</string>
-    <string name="widget_capital_label">Мой капитал</string>
-    <string name="widget_record_voice">Записать голосом</string>
-    <string name="widget_preview_available">Свободно: 48 500 ₽</string>
-    <string name="widget_preview_today">Сегодня: −1 250 ₽</string>
 </resources>

@@ -19,7 +19,6 @@ import { formatMinorAsCurrency, fromMinorUnits, type SupportedLanguage } from '.
 export interface WidgetMirrorState {
   availableBalance: number;
   capital: number;
-  todayExpense: number;
   targetCapital: number;
   currency: string;
   language: SupportedLanguage | string;
@@ -57,9 +56,6 @@ const requestWidgetRedraw = (): void => {
 };
 
 const localeFor = (language: string): string => (language === 'en' ? 'en-US' : 'ru-RU');
-
-const localDateKey = (date: Date = new Date()): string =>
-  `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`;
 
 const capitalLabelFor = (language: string): string => (language === 'en' ? 'Capital' : 'Капитал');
 const availableLabelFor = (language: string): string => (language === 'en' ? 'Available' : 'Доступно');
@@ -105,30 +101,9 @@ export const syncWidgetMirror = (state: WidgetMirrorState): void => {
   writeKey('expense_label', expenseLabelFor(state.language));
   writeKey('theme', state.isDarkMode ? 'dark' : 'light');
   writeKey('currency_minor', showAmounts ? String(fromMinorUnits(state.availableBalance)) : '');
-  writeKey('current_balance_minor', String(Math.round(state.availableBalance)));
-  writeKey('capital_balance_minor', String(Math.round(state.capital)));
-  writeKey('today_expense_minor', String(Math.max(0, Math.round(state.todayExpense))));
-  writeKey('today_expense_date', localDateKey());
-  writeKey('show_amounts', showAmounts ? 'true' : 'false');
-  writeKey('language', state.language === 'en' ? 'en' : 'ru');
-  writeKey('currency', state.currency);
   writeKey('updated_at', new Date().toISOString());
 
   requestWidgetRedraw();
-};
-
-/** Masks stale native widget values while encrypted app data is unreadable. */
-export const syncWidgetRecoveryMirror = (language: string = 'ru', isDarkMode: boolean = true): void => {
-  syncWidgetMirror({
-    availableBalance: 0,
-    capital: 0,
-    todayExpense: 0,
-    targetCapital: 0,
-    currency: 'RUB',
-    language,
-    isDarkMode,
-    showAmounts: false,
-  });
 };
 
 export const isWidgetMirrorActive = (): boolean => isBridgeAvailable();

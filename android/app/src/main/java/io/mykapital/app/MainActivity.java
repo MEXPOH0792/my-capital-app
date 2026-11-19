@@ -1,117 +1,67 @@
 package io.mykapital.app;
 
-import android.Manifest;
 import android.content.Context;
-import android.content.Intent;
 import android.content.SharedPreferences;
-import android.content.pm.PackageInfo;
-import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.security.keystore.KeyGenParameterSpec;
+import android.security.keystore.KeyProperties;
+import android.util.Base64;
 import android.view.WindowManager;
 import android.webkit.JavascriptInterface;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import androidx.biometric.BiometricManager;
 import androidx.biometric.BiometricPrompt;
-import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
-import androidx.core.content.pm.PackageInfoCompat;
 import androidx.core.view.WindowCompat;
 import androidx.core.view.WindowInsetsCompat;
 import androidx.core.view.WindowInsetsControllerCompat;
 import androidx.fragment.app.FragmentActivity;
 import com.getcapacitor.BridgeActivity;
+import java.nio.charset.StandardCharsets;
+import java.security.KeyStore;
 import java.util.concurrent.Executor;
-import org.json.JSONObject;
+import javax.crypto.Cipher;
+import javax.crypto.KeyGenerator;
+import javax.crypto.SecretKey;
+import javax.crypto.spec.GCMParameterSpec;
 
 public class MainActivity extends BridgeActivity {
     private static final int DARK_BG = Color.parseColor("#020402");
     private static final int LIGHT_BG = Color.parseColor("#EFF5EF");
-    private static final int SPEECH_PERMISSION_REQUEST = 4107;
-    private static final String RUNTIME_PREFS_NAME = "my_capital_runtime";
-    private static final String WEB_CACHE_VERSION_KEY = "web_cache_version";
+    private static final String SECURE_PREFS_NAME = "my_capital_secure_storage";
+    private static final String KEY_ALIAS = "my_capital_master_key";
+    private static final String ANDROID_KEYSTORE = "AndroidKeyStore";
+    private static final String CIPHER_TRANSFORMATION = "AES/GCM/NoPadding";
+    private static final int GCM_TAG_LENGTH_BITS = 128;
+    private static final int GCM_IV_LENGTH_BYTES = 12;
+    private static final String CORRUPT_SUFFIX = "__corrupt_";
 
-    private OnDeviceSpeechService onDeviceSpeechService;
-    private String pendingSpeechCallbackId;
-    private String pendingSpeechLanguageTag;
-    private long loadedNativeStateRevision;
-    private SecureStateRepository secureRepository;
+    /**
+     * Last storage problem seen in this process: "ok", "decrypt_failed" or
+     * "encrypt_failed". The JS layer reads it on start to decide whether to
+     * show the recovery screen instead of a fresh onboarding.
+     */
+    private volatile String storageStatus = "ok";
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        secureRepository = new SecureStateRepository(this);
-        onDeviceSpeechService = new OnDeviceSpeechService(this);
-        loadedNativeStateRevision = secureRepository.getNativeStateRevision();
         applySystemBars(true);
 
         if (getBridge() != null && getBridge().getWebView() != null) {
             WebView webView = getBridge().getWebView();
             WebSettings settings = webView.getSettings();
-            clearWebCacheAfterUpgrade(webView);
+            // Use the default cache so the bundled web assets are served from
+            // the WebView cache on subsequent launches. Wiping the cache on
+            // every onCreate forced a fresh asset load and added perceptible
+            // start-up latency without any user-visible benefit. The bundle
+            // itself is shipped with content-hashed filenames, so cache
+            // invalidation is handled by Vite on update.
             settings.setCacheMode(WebSettings.LOAD_DEFAULT);
             webView.setBackgroundColor(Color.TRANSPARENT);
             webView.addJavascriptInterface(new SystemUiBridge(), "SystemUiBridge");
-        }
-    }
-
-    /**
-     * The bundled Vite assets are content-hashed, but a cached index.html can
-     * still point at the previous bundle after an in-place APK update. Clear
-     * only WebView's HTTP cache once per Android version; financial data lives
-     * in encrypted SharedPreferences and remains untouched.
-     */
-    private void clearWebCacheAfterUpgrade(WebView webView) {
-        SharedPreferences runtimePrefs = getSharedPreferences(RUNTIME_PREFS_NAME, Context.MODE_PRIVATE);
-        long currentVersion;
-        try {
-            PackageInfo packageInfo = getPackageManager().getPackageInfo(getPackageName(), 0);
-            currentVersion = PackageInfoCompat.getLongVersionCode(packageInfo);
-        } catch (PackageManager.NameNotFoundException error) {
-            webView.clearCache(true);
-            return;
-        }
-
-        if (runtimePrefs.getLong(WEB_CACHE_VERSION_KEY, -1L) == currentVersion) return;
-
-        webView.clearCache(true);
-        runtimePrefs.edit().putLong(WEB_CACHE_VERSION_KEY, currentVersion).apply();
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
-        long revision = secureRepository.getNativeStateRevision();
-        if (revision <= loadedNativeStateRevision) return;
-        loadedNativeStateRevision = revision;
-        if (getBridge() == null || getBridge().getWebView() == null) return;
-        getBridge().getWebView().post(() ->
-            getBridge().getWebView().evaluateJavascript("window.location.reload();", null)
-        );
-    }
-
-    @Override
-    public void onDestroy() {
-        if (onDeviceSpeechService != null) onDeviceSpeechService.destroy();
-        super.onDestroy();
-    }
-
-    @Override
-    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        if (requestCode != SPEECH_PERMISSION_REQUEST) return;
-
-        String callbackId = pendingSpeechCallbackId;
-        String languageTag = pendingSpeechLanguageTag;
-        pendingSpeechCallbackId = null;
-        pendingSpeechLanguageTag = null;
-
-        if (callbackId == null || callbackId.isEmpty()) return;
-        if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-            startOnDeviceSpeechInternal(callbackId, languageTag);
-        } else {
-            deliverOnDeviceSpeechResult(callbackId, "permission_denied", "");
         }
     }
 
@@ -138,6 +88,70 @@ public class MainActivity extends BridgeActivity {
         }
     }
 
+    private void quarantine(String key, String rawValue) {
+        storageStatus = "decrypt_failed";
+        getSecurePreferences()
+            .edit()
+            .putString(key + CORRUPT_SUFFIX + System.currentTimeMillis(), rawValue)
+            .remove(key)
+            .apply();
+    }
+
+    private SharedPreferences getSecurePreferences() {
+        return getSharedPreferences(SECURE_PREFS_NAME, Context.MODE_PRIVATE);
+    }
+
+    private SecretKey getOrCreateSecretKey() throws Exception {
+        KeyStore keyStore = KeyStore.getInstance(ANDROID_KEYSTORE);
+        keyStore.load(null);
+
+        if (keyStore.containsAlias(KEY_ALIAS)) {
+            KeyStore.SecretKeyEntry entry = (KeyStore.SecretKeyEntry) keyStore.getEntry(KEY_ALIAS, null);
+            return entry.getSecretKey();
+        }
+
+        KeyGenerator keyGenerator = KeyGenerator.getInstance(KeyProperties.KEY_ALGORITHM_AES, ANDROID_KEYSTORE);
+        keyGenerator.init(
+            new KeyGenParameterSpec.Builder(KEY_ALIAS, KeyProperties.PURPOSE_ENCRYPT | KeyProperties.PURPOSE_DECRYPT)
+                .setBlockModes(KeyProperties.BLOCK_MODE_GCM)
+                .setEncryptionPaddings(KeyProperties.ENCRYPTION_PADDING_NONE)
+                .setKeySize(256)
+                .build()
+        );
+        return keyGenerator.generateKey();
+    }
+
+    private String encryptValue(String plainText) throws Exception {
+        Cipher cipher = Cipher.getInstance(CIPHER_TRANSFORMATION);
+        cipher.init(Cipher.ENCRYPT_MODE, getOrCreateSecretKey());
+
+        byte[] iv = cipher.getIV();
+        byte[] encrypted = cipher.doFinal(plainText.getBytes(StandardCharsets.UTF_8));
+        byte[] combined = new byte[iv.length + encrypted.length];
+
+        System.arraycopy(iv, 0, combined, 0, iv.length);
+        System.arraycopy(encrypted, 0, combined, iv.length, encrypted.length);
+
+        return Base64.encodeToString(combined, Base64.NO_WRAP);
+    }
+
+    private String decryptValue(String encryptedValue) throws Exception {
+        byte[] combined = Base64.decode(encryptedValue, Base64.NO_WRAP);
+        if (combined.length <= GCM_IV_LENGTH_BYTES) {
+            return null;
+        }
+
+        byte[] iv = new byte[GCM_IV_LENGTH_BYTES];
+        byte[] encrypted = new byte[combined.length - GCM_IV_LENGTH_BYTES];
+        System.arraycopy(combined, 0, iv, 0, GCM_IV_LENGTH_BYTES);
+        System.arraycopy(combined, GCM_IV_LENGTH_BYTES, encrypted, 0, encrypted.length);
+
+        Cipher cipher = Cipher.getInstance(CIPHER_TRANSFORMATION);
+        cipher.init(Cipher.DECRYPT_MODE, getOrCreateSecretKey(), new GCMParameterSpec(GCM_TAG_LENGTH_BITS, iv));
+        byte[] decrypted = cipher.doFinal(encrypted);
+        return new String(decrypted, StandardCharsets.UTF_8);
+    }
+
     private final class SystemUiBridge {
         @JavascriptInterface
         public void setDarkMode(boolean isDarkMode) {
@@ -146,7 +160,28 @@ public class MainActivity extends BridgeActivity {
 
         @JavascriptInterface
         public String secureStorageGetItem(String key) {
-            return secureRepository.getItem(key);
+            if (key == null || key.isEmpty()) {
+                return null;
+            }
+
+            String stored = getSecurePreferences().getString(key, null);
+            if (stored == null) {
+                return null;
+            }
+
+            try {
+                String plain = decryptValue(stored);
+                if (plain == null) {
+                    quarantine(key, stored);
+                }
+                return plain;
+            } catch (Exception error) {
+                // Never delete what we cannot read: the Keystore key may come
+                // back, or the user may need the raw copy for support. Park it
+                // under a quarantine key and report the failure to JS.
+                quarantine(key, stored);
+                return null;
+            }
         }
 
         /**
@@ -155,12 +190,28 @@ public class MainActivity extends BridgeActivity {
          */
         @JavascriptInterface
         public String secureStorageSetItem(String key, String value) {
-            return secureRepository.setItem(key, value);
+            if (key == null || key.isEmpty()) {
+                return "error:empty_key";
+            }
+
+            if (value == null || value.isEmpty()) {
+                getSecurePreferences().edit().remove(key).apply();
+                return "ok";
+            }
+
+            try {
+                String encryptedValue = encryptValue(value);
+                getSecurePreferences().edit().putString(key, encryptedValue).apply();
+                return "ok";
+            } catch (Exception error) {
+                storageStatus = "encrypt_failed";
+                return "error:encrypt";
+            }
         }
 
         @JavascriptInterface
         public String secureStorageStatus() {
-            return secureRepository.getStatus();
+            return storageStatus;
         }
 
         /**
@@ -180,24 +231,11 @@ public class MainActivity extends BridgeActivity {
 
         @JavascriptInterface
         public void secureStorageRemoveItem(String key) {
-            secureRepository.removeItem(key);
-        }
+            if (key == null || key.isEmpty()) {
+                return;
+            }
 
-        /**
-         * Full local erase used by the explicit "forgot PIN" flow. This also
-         * removes quarantined ciphertext, the Keystore key and widget values.
-         */
-        @JavascriptInterface
-        public String secureStorageClearAppData() {
-            String secureResult = secureRepository.clearAll();
-            boolean widgetCleared = getSharedPreferences(
-                CapitalWidgetUpdater.WIDGET_PREFS_NAME,
-                Context.MODE_PRIVATE
-            ).edit().clear().commit();
-            CapitalWidgetUpdater.requestRedraw(MainActivity.this);
-
-            if (!"ok".equals(secureResult)) return secureResult;
-            return widgetCleared ? "ok" : "error:widget_storage_clear";
+            getSecurePreferences().edit().remove(key).apply();
         }
 
         /**
@@ -209,7 +247,7 @@ public class MainActivity extends BridgeActivity {
         public void widgetSetValue(String key, String value) {
             if (key == null || key.isEmpty()) return;
             SharedPreferences prefs = getSharedPreferences(
-                CapitalWidgetUpdater.WIDGET_PREFS_NAME,
+                CapitalWidgetProvider.WIDGET_PREFS_NAME,
                 Context.MODE_PRIVATE
             );
             if (value == null) {
@@ -225,44 +263,7 @@ public class MainActivity extends BridgeActivity {
          */
         @JavascriptInterface
         public void widgetUpdate() {
-            CapitalWidgetUpdater.requestRedraw(MainActivity.this);
-        }
-
-        /**
-         * Deliberately reports only the Android 12+ recognizer that guarantees
-         * on-device processing. The generic recognizer is not used because it
-         * may stream audio to a remote speech service.
-         */
-        @JavascriptInterface
-        public boolean onDeviceSpeechAvailable() {
-            return OnDeviceSpeechService.isAvailable(MainActivity.this);
-        }
-
-        @JavascriptInterface
-        public void startOnDeviceSpeech(String callbackId, String languageTag) {
-            final String finalCallbackId = callbackId == null ? "" : callbackId;
-            final String finalLanguageTag = languageTag == null || languageTag.isEmpty() ? "ru-RU" : languageTag;
-            runOnUiThread(() -> {
-                if (finalCallbackId.isEmpty()) return;
-                if (!onDeviceSpeechAvailable()) {
-                    deliverOnDeviceSpeechResult(finalCallbackId, "unavailable", "");
-                    return;
-                }
-
-                if (ContextCompat.checkSelfPermission(MainActivity.this, Manifest.permission.RECORD_AUDIO)
-                    != PackageManager.PERMISSION_GRANTED) {
-                    pendingSpeechCallbackId = finalCallbackId;
-                    pendingSpeechLanguageTag = finalLanguageTag;
-                    ActivityCompat.requestPermissions(
-                        MainActivity.this,
-                        new String[] { Manifest.permission.RECORD_AUDIO },
-                        SPEECH_PERMISSION_REQUEST
-                    );
-                    return;
-                }
-
-                startOnDeviceSpeechInternal(finalCallbackId, finalLanguageTag);
-            });
+            runOnUiThread(() -> CapitalWidgetProvider.requestRedraw(MainActivity.this));
         }
 
         /**
@@ -344,23 +345,6 @@ public class MainActivity extends BridgeActivity {
                 }
             });
         }
-    }
-
-    private void startOnDeviceSpeechInternal(String callbackId, String languageTag) {
-        onDeviceSpeechService.start(
-            languageTag,
-            (status, transcript) -> deliverOnDeviceSpeechResult(callbackId, status, transcript)
-        );
-    }
-
-    private void deliverOnDeviceSpeechResult(String callbackId, String status, String payload) {
-        if (getBridge() == null || getBridge().getWebView() == null) return;
-        String script = "window.SystemUiBridge && window.SystemUiBridge.__resolveOnDeviceSpeech"
-            + " && window.SystemUiBridge.__resolveOnDeviceSpeech("
-            + JSONObject.quote(callbackId == null ? "" : callbackId) + ","
-            + JSONObject.quote(status == null ? "unknown" : status) + ","
-            + JSONObject.quote(payload == null ? "" : payload) + ");";
-        getBridge().getWebView().post(() -> getBridge().getWebView().evaluateJavascript(script, null));
     }
 
     private void deliverBiometricResult(String callbackId, String result) {

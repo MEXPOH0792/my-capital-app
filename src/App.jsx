@@ -82,12 +82,7 @@ export default function App() {
     ],
   );
   useAndroidBackButton(backLayers);
-
-  // Saved data that could not be decrypted: writes were suspended at store
-  // start-up, and the user decides here what happens next. Widget sync uses
-  // the same flag so unreadable/stale monetary values are masked immediately.
-  const [needsRecovery, setNeedsRecovery] = useState(areSecureWritesSuspended);
-  useWidgetSync({ enabled: !needsRecovery });
+  useWidgetSync();
 
   // Widget tap-actions: open income/expense modal directly. Body tap just
   // brings the app to the foreground on the home tab.
@@ -96,15 +91,14 @@ export default function App() {
       open: () => workspace.setActiveTab('home'),
       income: () => workspace.modalFlow?.openTransactionModal?.('income'),
       expense: () => workspace.modalFlow?.openTransactionModal?.('expense'),
-      voice: () => {
-        workspace.setActiveTab('home');
-        if (security.isLocked) workspace.modalFlow?.openTransactionModal?.('expense');
-        else workspace.modalFlow?.startVoiceExpense?.();
-      },
     }),
-    [workspace.modalFlow, workspace.setActiveTab, security.isLocked],
+    [workspace.modalFlow, workspace.setActiveTab],
   );
   useWidgetDeepLink(widgetActions);
+
+  // Saved data that could not be decrypted: writes were suspended at store
+  // start-up, and the user decides here what happens next.
+  const [needsRecovery, setNeedsRecovery] = useState(areSecureWritesSuspended);
 
   const restoreFromFile = async (file) => {
     const payload = await loadBackupPayload(file, { isEnglish, askPassword: requestBackupPassword });
@@ -165,7 +159,10 @@ export default function App() {
   }
 
   return (
-    <div className="fixed inset-0 flex flex-col overflow-hidden select-none font-ui" style={rootStyle}>
+    <div
+      className="fixed inset-0 flex flex-col overflow-hidden select-none font-ui transition-colors duration-500"
+      style={rootStyle}
+    >
       <AppSidebar {...appView.sidebarProps} />
 
       <AppHeader {...appView.headerProps} />

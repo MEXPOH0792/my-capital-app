@@ -29,7 +29,7 @@ export const MISC_TEXT = {
       assetDistribution: 'Позиция капитала',
       liquidity: 'Ликвидность',
       capital: 'Капитал',
-      safety: 'Запас',
+      safety: 'Подушка',
     },
     history: {
       title: 'История',
@@ -47,7 +47,7 @@ export const MISC_TEXT = {
       expense: 'Расход',
       debt: 'Долг',
       targetCapital: 'Цель капитала',
-      targetSafety: 'Цель запаса',
+      targetSafety: 'Цель подушки',
       balance: 'Баланс',
       done: 'Сохранить',
       iOwe: 'Я должен',
@@ -82,7 +82,7 @@ export const MISC_TEXT = {
       },
       growth: {
         label: 'Рост',
-        description: 'Больше денег сразу уходит в финансовый запас и капитал.',
+        description: 'Больше денег сразу уходит в подушку и капитал.',
       },
       custom: {
         label: 'Своя схема',

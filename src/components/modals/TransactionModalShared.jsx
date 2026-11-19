@@ -1,11 +1,4 @@
 import { useState } from 'react';
-import { isAndroidDesign } from '../../app/platformDesign.js';
-import CategoryIcon from '../ui/CategoryIcon.jsx';
-import {
-  CATEGORY_PICKER_APPEARANCES,
-  getCategoryAppearance,
-  getSavedCategoryAppearance,
-} from '../ui/categoryAppearance.js';
 
 /** Chips shown before the "show more" expander kicks in. */
 const COLLAPSED_PRESET_COUNT = 8;
@@ -18,7 +11,7 @@ export const scrollFieldIntoView = (event) => {
 
 export function ModalTitle({ copy, modal, selectedDebt }) {
   return (
-    <h3 className="mc-modal-title text-center text-[10px] font-semibold opacity-40">
+    <h3 className="text-center text-[10px] font-semibold opacity-40">
       {modal === 'income'
         ? copy.modal.income
         : modal === 'edit_income'
@@ -46,7 +39,7 @@ export function AmountInput({ inputValue, setInputValue, formatInput }) {
       value={inputValue}
       onChange={(event) => setInputValue(formatInput(event.target.value))}
       onFocus={scrollFieldIntoView}
-      className="mc-amount-input w-full bg-transparent text-center text-[clamp(1.9rem,12vw,2.5rem)] font-numbers font-extrabold outline-none"
+      className="w-full bg-transparent text-center text-[clamp(1.9rem,12vw,2.5rem)] font-numbers font-extrabold outline-none"
       placeholder="0"
     />
   );
@@ -58,7 +51,7 @@ export function SubmitButton({ copy, handleAction, canSubmitAction }) {
       type="button"
       onClick={handleAction}
       disabled={!canSubmitAction}
-      className="mc-submit-button w-full rounded-[16px] bg-emerald-600 py-3 text-[10px] font-semibold text-white shadow-xl shadow-emerald-600/20 transition-transform active:scale-95 disabled:cursor-not-allowed disabled:opacity-40"
+      className="w-full rounded-[16px] bg-emerald-600 py-3 text-[10px] font-semibold text-white shadow-xl shadow-emerald-600/20 transition-transform active:scale-95 disabled:cursor-not-allowed disabled:opacity-40"
     >
       {copy.modal.done}
     </button>
@@ -74,7 +67,6 @@ export function CategorySection({
   removeIncomePreset,
   removeExpensePreset,
   softPanelStyle,
-  transactions,
 }) {
   const [isManaging, setIsManaging] = useState(false);
   const [isExpanded, setIsExpanded] = useState(false);
@@ -97,50 +89,6 @@ export function CategorySection({
   const hiddenCount = presets.length - visiblePresets.length;
 
   const customLabel = isEnglish ? 'Custom category' : 'Своя категория';
-  const categoryType = isIncomeModal ? 'income' : 'expense';
-  const selectedCustomAppearance =
-    transactionCategoryForm.appearance || getCategoryAppearance(transactionCategoryForm.custom, categoryType);
-  const appearanceLabels = isEnglish
-    ? {
-        groceries: 'Groceries',
-        cafe: 'Cafe',
-        transport: 'Transport',
-        home: 'Home',
-        utilities: 'Utilities',
-        health: 'Health',
-        education: 'Education',
-        shopping: 'Shopping',
-        charity: 'Charity',
-        mobile: 'Mobile',
-        leisure: 'Leisure',
-        kids: 'Kids',
-        gift: 'Gift',
-        salary: 'Salary',
-        business: 'Business',
-        interest: 'Interest',
-        sale: 'Sale',
-        other: 'Other',
-      }
-    : {
-        groceries: 'Продукты',
-        cafe: 'Кафе',
-        transport: 'Транспорт',
-        home: 'Дом',
-        utilities: 'Коммунальные',
-        health: 'Здоровье',
-        education: 'Учёба',
-        shopping: 'Покупки',
-        charity: 'Благотворительность',
-        mobile: 'Связь',
-        leisure: 'Досуг',
-        kids: 'Дети',
-        gift: 'Подарок',
-        salary: 'Зарплата',
-        business: 'Бизнес',
-        interest: 'Проценты',
-        sale: 'Продажа',
-        other: 'Другое',
-      };
 
   const removePreset = (item) => {
     if (selectedPreset === item) setTransactionCategoryForm((prev) => ({ ...prev, preset: '' }));
@@ -166,7 +114,7 @@ export function CategorySection({
           ) : null}
         </div>
 
-        <div className="mc-category-picker flex flex-wrap gap-1.5">
+        <div className="flex flex-wrap gap-1.5">
           {visiblePresets.map((item) => {
             const isSelected = selectedPreset === item;
 
@@ -192,33 +140,17 @@ export function CategorySection({
                 key={item}
                 type="button"
                 onClick={() => {
-                  setTransactionCategoryForm({
-                    preset: item,
-                    custom: '',
-                    appearance: getSavedCategoryAppearance(transactions, item, categoryType),
-                  });
+                  setTransactionCategoryForm({ preset: item, custom: '' });
                   setIsCustomManuallyOpen(false);
                 }}
                 aria-pressed={isSelected}
-                className={`mc-category-choice min-h-[34px] rounded-full border px-3 text-[11px] font-semibold transition-transform active:scale-95 ${
+                className={`min-h-[34px] rounded-full border px-3 text-[11px] font-semibold transition-transform active:scale-95 ${
                   isSelected
                     ? 'border-emerald-500 bg-emerald-500/12 text-[var(--mc-positive)]'
                     : 'border-[var(--mc-border)] bg-[var(--mc-soft)] text-[var(--mc-text-dim)]'
                 }`}
               >
-                {isAndroidDesign() ? (
-                  <>
-                    <CategoryIcon
-                      category={item}
-                      type={categoryType}
-                      appearance={getSavedCategoryAppearance(transactions, item, categoryType)}
-                      compact
-                    />
-                    <span>{item}</span>
-                  </>
-                ) : (
-                  item
-                )}
+                {item}
               </button>
             );
           })}
@@ -244,50 +176,22 @@ export function CategorySection({
       </div>
 
       {isCustomOpen ? (
-        <div className="space-y-2">
-          <label className="block space-y-1">
-            <span className="block text-[10px] font-semibold opacity-55">{customLabel}</span>
-            <input
-              type="text"
-              value={transactionCategoryForm.custom}
-              onChange={(event) => setTransactionCategoryForm((prev) => ({ ...prev, custom: event.target.value }))}
-              onFocus={scrollFieldIntoView}
-              placeholder={customLabel}
-              className="w-full rounded-[16px] border px-3.5 py-2 text-[13px] font-bold outline-none"
-              style={softPanelStyle}
-            />
-          </label>
-          <fieldset className="mc-category-icon-fieldset space-y-1.5">
-            <legend className="text-[10px] font-semibold opacity-55">
-              {isEnglish ? 'Category icon' : 'Иконка категории'}
-            </legend>
-            <div className="mc-category-icon-picker" data-no-sheet-drag>
-              {CATEGORY_PICKER_APPEARANCES.map((appearance) => (
-                <button
-                  key={appearance}
-                  type="button"
-                  onClick={() => setTransactionCategoryForm((prev) => ({ ...prev, appearance }))}
-                  aria-label={appearanceLabels[appearance]}
-                  aria-pressed={selectedCustomAppearance === appearance}
-                  title={appearanceLabels[appearance]}
-                  className="mc-category-icon-choice"
-                >
-                  <CategoryIcon appearance={appearance} category="" type={categoryType} compact />
-                </button>
-              ))}
-            </div>
-          </fieldset>
-        </div>
+        <label className="block space-y-1">
+          <span className="block text-[10px] font-semibold opacity-55">{customLabel}</span>
+          <input
+            type="text"
+            value={transactionCategoryForm.custom}
+            onChange={(event) => setTransactionCategoryForm((prev) => ({ ...prev, custom: event.target.value }))}
+            onFocus={scrollFieldIntoView}
+            placeholder={customLabel}
+            className="w-full rounded-[16px] border px-3.5 py-2 text-[13px] font-bold outline-none"
+            style={softPanelStyle}
+          />
+        </label>
       ) : (
         <button
           type="button"
-          onClick={() => {
-            setTransactionCategoryForm((prev) => ({
-              ...prev,
-              appearance: prev.appearance || (isIncomeModal ? 'salary' : 'other'),
-            }));
-            setIsCustomManuallyOpen(true);
-          }}
+          onClick={() => setIsCustomManuallyOpen(true)}
           className="min-h-[34px] w-full rounded-[16px] border border-dashed border-[var(--mc-border)] px-3 text-[11px] font-semibold opacity-55 transition-opacity hover:opacity-100"
         >
           + {customLabel}
@@ -320,8 +224,6 @@ export function IncomeDistributionSection({ allocationModes, store, copy, isEngl
             type="button"
             onClick={store.toggleIncomeDistribution}
             aria-label={copy.settings.autoDistribution}
-            role={isAndroidDesign() ? 'switch' : undefined}
-            aria-checked={isAndroidDesign() ? store.incomeDistributionEnabled : undefined}
             className={`relative h-6 w-11 rounded-full border transition-all ${
               store.incomeDistributionEnabled
                 ? 'border-emerald-400/50 bg-emerald-500/20'

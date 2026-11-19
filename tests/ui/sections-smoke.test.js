@@ -179,8 +179,6 @@ addTest('HomeSection smoke keeps the product focused on action, tree and growth'
   );
 
   assert.ok(html.includes(copy.home.availableBalance));
-  assert.ok(!html.includes(copy.home.payYourself));
-  assert.ok(!html.includes(copy.home.treeStateNoRequired));
   assert.match(html, /Следующий шаг/);
   assert.match(html, /Доход/);
   assert.match(html, /Расход/);

@@ -10,20 +10,6 @@ const hasAmount = (amount) => (content) =>
 
 const fmt = (value) => formatMinorAsCurrency(value, 'ru-RU', 'RUB');
 
-const previousMonthFixture = () => {
-  const now = new Date();
-  const date = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth() - 1, 4, 10));
-  const rawLabel = new Intl.DateTimeFormat('ru-RU', {
-    month: 'long',
-    year: 'numeric',
-    timeZone: 'UTC',
-  }).format(date);
-  return {
-    date: date.toISOString(),
-    label: rawLabel.charAt(0).toLocaleUpperCase('ru-RU') + rawLabel.slice(1),
-  };
-};
-
 const expense = (id, amount, category, date) => ({
   id,
   type: 'expense',
@@ -91,9 +77,8 @@ addTest('the report screen adds a family tab that combines both sides', async ()
 
 addTest('a month the partner has not shared is called out', async () => {
   resetDom();
-  const unsharedMonth = previousMonthFixture();
   const store = storeWithFamily({
-    transactions: [expense('t1', toMinorUnits(40000), 'Еда', unsharedMonth.date)],
+    transactions: [expense('t1', toMinorUnits(40000), 'Еда', '2026-08-04T10:00:00Z')],
     familyReports: [
       {
         monthKey: '2026-07',
@@ -108,7 +93,7 @@ addTest('a month the partner has not shared is called out', async () => {
   await renderAnalytics(store);
 
   fireEvent.click(screen.getByText('Семья'));
-  fireEvent.click(screen.getByText(unsharedMonth.label));
+  fireEvent.click(screen.getByText('Август 2026 г.'));
   assert.ok(screen.getByText(/ещё не присылал/));
   // Only the user's own spending is in the total for that month: it shows up
   // as the total, as "mine" and as the single category.

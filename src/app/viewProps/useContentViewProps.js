@@ -106,6 +106,7 @@ export function useContentViewProps({
     () =>
       buildHomeProps({
         store,
+        exportBackup,
         fmt,
         locale,
         primaryStatus,
@@ -118,6 +119,7 @@ export function useContentViewProps({
         modalFlow,
       }),
     [
+      exportBackup,
       store,
       fmt,
       locale,

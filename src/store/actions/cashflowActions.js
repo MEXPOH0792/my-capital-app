@@ -41,7 +41,6 @@ const buildIncome = (state, safeAmount, safeCategory, options = {}) => {
   const safetyAccount = state.accounts.find((item) => item.systemKey === 'safety');
   const capitalAccount = state.accounts.find((item) => item.systemKey === 'capital');
   const sadakaAccount = state.accounts.find((item) => item.systemKey === 'sadaka');
-  const categoryAppearance = toSafeText(options.categoryAppearance, '');
 
   if (!state.incomeDistributionEnabled) {
     const accounts = allocateLiquidToSystemAccounts(state.accounts, state.storageSetup, safeAmount);
@@ -63,7 +62,6 @@ const buildIncome = (state, safeAmount, safeCategory, options = {}) => {
             accountName: liquidPrimaryAccount?.name || null,
             effects: liquidPrimaryAccount ? [{ accountId: liquidPrimaryAccount.id, delta: safeAmount }] : [],
             coverage: { monthKey: coverageMonthKey, incomeTotalDelta: safeAmount, requiredCoveredDelta: 0 },
-            ...(categoryAppearance ? { categoryAppearance } : {}),
           },
         },
       ],
@@ -130,7 +128,6 @@ const buildIncome = (state, safeAmount, safeCategory, options = {}) => {
             incomeTotalDelta: safeAmount,
             requiredCoveredDelta: reservedForRequired,
           },
-          ...(categoryAppearance ? { categoryAppearance } : {}),
         },
       },
       ...(reservedForRequired > 0
@@ -162,13 +159,13 @@ const buildIncome = (state, safeAmount, safeCategory, options = {}) => {
 };
 
 export const createCashflowActions = (set) => ({
-  addIncome: (amount, category, categoryAppearance) =>
+  addIncome: (amount, category) =>
     set((state) => {
       const copy = getCopy(state.language);
       const safeAmount = toSafeMinorAmount(amount);
       const safeCategory = toSafeText(category, copy.modal.income);
       if (safeAmount <= 0) return {};
-      const built = buildIncome(state, safeAmount, safeCategory, { categoryAppearance });
+      const built = buildIncome(state, safeAmount, safeCategory);
       return {
         ...syncTotalsFromAccounts(built.accounts),
         totalSadakaPaid: built.totalSadakaPaid,
@@ -176,7 +173,7 @@ export const createCashflowActions = (set) => ({
         transactions: [...built.records, ...state.transactions],
       };
     }),
-  addExpense: (amount, category, accountId, categoryAppearance) =>
+  addExpense: (amount, category, accountId) =>
     set((state) => {
       const copy = getCopy(state.language);
       const safeAmount = toSafeMinorAmount(amount);
@@ -203,17 +200,14 @@ export const createCashflowActions = (set) => ({
                   accountId: spendAccount.id,
                   accountName: spendAccount.name,
                   effects: [{ accountId: spendAccount.id, delta: -safeAmount }],
-                  ...(categoryAppearance ? { categoryAppearance } : {}),
                 }
-              : categoryAppearance
-                ? { categoryAppearance }
-                : null,
+              : null,
           },
           ...state.transactions,
         ],
       };
     }),
-  updateIncomeTransaction: (transactionId, amount, category, categoryAppearance) =>
+  updateIncomeTransaction: (transactionId, amount, category) =>
     set((state) => {
       const transaction = state.transactions.find((item) => item.id === transactionId);
       const safeAmount = toSafeMinorAmount(amount);
@@ -236,7 +230,6 @@ export const createCashflowActions = (set) => ({
             date: transaction.date,
             coverageMonthKey: transaction.meta.coverage?.monthKey,
             previousReserved: transaction.meta.coverage?.requiredCoveredDelta,
-            categoryAppearance: categoryAppearance || transaction.meta?.categoryAppearance,
           },
         );
         const transactions = [];
@@ -287,15 +280,12 @@ export const createCashflowActions = (set) => ({
                     incomeTotalDelta: safeAmount,
                     requiredCoveredDelta: 0,
                   },
-                  ...(categoryAppearance || item.meta?.categoryAppearance
-                    ? { categoryAppearance: categoryAppearance || item.meta?.categoryAppearance }
-                    : {}),
                 },
               },
         ),
       };
     }),
-  updateExpenseTransaction: (transactionId, amount, category, accountId, categoryAppearance) =>
+  updateExpenseTransaction: (transactionId, amount, category, accountId) =>
     set((state) => {
       const transaction = state.transactions.find((item) => item.id === transactionId);
       const safeAmount = toSafeMinorAmount(amount);
@@ -330,9 +320,6 @@ export const createCashflowActions = (set) => ({
                   accountId: nextSpendAccount.id,
                   accountName: nextSpendAccount.name,
                   effects: [{ accountId: nextSpendAccount.id, delta: -safeAmount }],
-                  ...(categoryAppearance || item.meta?.categoryAppearance
-                    ? { categoryAppearance: categoryAppearance || item.meta?.categoryAppearance }
-                    : {}),
                 },
               },
         ),

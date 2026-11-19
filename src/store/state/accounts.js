@@ -1,11 +1,5 @@
 import { toImportedMinorAmount, toSafeMinorAmount } from '../../utils/money.js';
-import {
-  createId,
-  getDefaultStorageSetup,
-  isLegacyDefaultSafetyName,
-  normalizeStorageSetup,
-  toSafeText,
-} from './core.js';
+import { createId, getDefaultStorageSetup, normalizeStorageSetup, toSafeText } from './core.js';
 
 const getPrimaryAccountId = (accounts) =>
   accounts.find((item) => item.isPrimary)?.id ||
@@ -212,9 +206,7 @@ export const sanitizeAccounts = (
       name:
         account.systemKey === 'liquidPrimary'
           ? storageSetup.liquidPrimaryName
-          : account.systemKey === 'safety' && isLegacyDefaultSafetyName(account.name, language)
-            ? storageSetup.safetyName
-            : toSafeText(account.name, defaultAccount?.name || account.name),
+          : toSafeText(account.name, defaultAccount?.name || account.name),
     };
   });
 

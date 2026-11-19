@@ -5,17 +5,10 @@ export interface SystemUiBridgeApi {
   /** "ok" | "decrypt_failed" | "encrypt_failed" — last storage problem in this process. */
   secureStorageStatus?: () => string;
   secureStorageRemoveItem?: (key: string) => void;
-  /** Permanently clears encrypted app storage, quarantine copies, the key and widget mirror. */
-  secureStorageClearAppData?: () => string | void;
   setDarkMode?: (isDarkMode: boolean) => void;
   biometricStatus?: () => string;
   biometricAuthenticate?: (callbackId: string, title: string, subtitle: string, cancelLabel: string) => void;
   __resolveBiometric?: (callbackId: string, result: string) => void;
-  /** True only when Android has a fully on-device speech recognizer. */
-  onDeviceSpeechAvailable?: () => boolean;
-  /** Starts one short, local-only speech recognition request. */
-  startOnDeviceSpeech?: (callbackId: string, languageTag: string) => void;
-  __resolveOnDeviceSpeech?: (callbackId: string, status: string, payload: string) => void;
   /** Write a single display string into the home-screen widget mirror. */
   widgetSetValue?: (key: string, value: string) => void;
   /** Ask the launcher to redraw all of our widgets now. */
@@ -49,20 +42,6 @@ export const PIN_STORAGE_KEY = 'capital-tree-pro-v9:pin';
 export const BACKUP_SECRET_STORAGE_KEY = 'capital-tree-pro-v9:backup-secret';
 export const PIN_ATTEMPTS_STORAGE_KEY = 'capital-tree-pro-v9:pin-attempts';
 export const FAMILY_SENDER_ID_STORAGE_KEY = 'capital-tree-pro-v9:family-sender-id';
-export const BIOMETRIC_OPT_IN_STORAGE_KEY = 'capital-tree-pro-v9:biometric-enabled';
-export const DIAGNOSTIC_ERRORS_STORAGE_KEY = 'capital-tree-pro-v9:diagnostic-errors';
-
-const APP_STORAGE_PREFIX = APP_STATE_STORAGE_KEY;
-const APP_STORAGE_KEYS = [
-  APP_STATE_STORAGE_KEY,
-  `${APP_STATE_STORAGE_KEY}__bak`,
-  PIN_STORAGE_KEY,
-  BACKUP_SECRET_STORAGE_KEY,
-  PIN_ATTEMPTS_STORAGE_KEY,
-  FAMILY_SENDER_ID_STORAGE_KEY,
-  BIOMETRIC_OPT_IN_STORAGE_KEY,
-  DIAGNOSTIC_ERRORS_STORAGE_KEY,
-];
 
 const getBrowserStorage = (): BridgeStorage => {
   if (typeof globalThis !== 'undefined' && (globalThis as { localStorage?: Storage }).localStorage) {
@@ -164,45 +143,6 @@ export const writeSecureValue = (key: string, value: string | null | undefined):
 
 export const removeSecureValue = (key: string): void => {
   securePersistStorage.removeItem(key);
-};
-
-const clearBrowserAppStorage = (): void => {
-  const storage = getBrowserStorage() as BridgeStorage & { length?: number; key?: (index: number) => string | null };
-  const keys = new Set(APP_STORAGE_KEYS);
-
-  // Include future app-owned keys without touching unrelated site storage.
-  if (typeof storage.length === 'number' && typeof storage.key === 'function') {
-    for (let index = 0; index < storage.length; index += 1) {
-      const key = storage.key(index);
-      if (key?.startsWith(APP_STORAGE_PREFIX)) keys.add(key);
-    }
-  }
-
-  keys.forEach((key) => storage.removeItem(key));
-};
-
-/**
- * Permanently removes all data owned by this app.
- *
- * On Android the native side also deletes quarantined ciphertext, the AES key
- * and the widget mirror. Auxiliary WebView localStorage flags are cleared here.
- * This deliberately bypasses the recovery write suspension because deletion
- * is the explicit user choice that ends recovery.
- */
-export const clearAllAppData = (): void => {
-  const bridge = getBridge();
-  let nativeError = '';
-  if (bridge) {
-    if (typeof bridge.secureStorageClearAppData !== 'function') {
-      nativeError = 'full_erase_unavailable';
-    } else {
-      const result = bridge.secureStorageClearAppData();
-      if (typeof result === 'string' && result !== 'ok') nativeError = result;
-    }
-  }
-
-  clearBrowserAppStorage();
-  if (nativeError) throw new Error(nativeError);
 };
 
 const toHex = (view: Uint8Array): string =>

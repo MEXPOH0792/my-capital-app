@@ -1,5 +1,8 @@
+import { shouldRemindBackup } from '../../domain/backup.js';
+
 export function buildHomeProps({
   store,
+  exportBackup,
   fmt,
   locale,
   primaryStatus,
@@ -27,6 +30,8 @@ export function buildHomeProps({
     },
     onOpenIncome: () => modalFlow.openTransactionModal('income'),
     onOpenExpense: () => modalFlow.openTransactionModal('expense'),
+    showBackupReminder: shouldRemindBackup(store.lastBackupAt, store.transactions.length, Date.now()),
+    onExportBackup: exportBackup,
   };
 }
 

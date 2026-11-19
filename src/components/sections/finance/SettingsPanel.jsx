@@ -1,6 +1,5 @@
 import { useState } from 'react';
-import { ChevronDown, Stethoscope, Languages, Coins, DatabaseBackup, ShieldCheck } from 'lucide-react';
-import { isAndroidDesign } from '../../../app/platformDesign.js';
+import { ChevronDown, Stethoscope } from 'lucide-react';
 import { APP_VERSION } from '../../../app/appVersion.js';
 import { SectionCard, SectionHeader } from '../../ui/AppUi.jsx';
 import { SUPPORTED_CURRENCY_OPTIONS } from '../../../utils/money.js';
@@ -44,7 +43,7 @@ export default function SettingsPanel({ copy, store, theme, softPanelStyle, text
   } = settings;
 
   return (
-    <div className="mc-settings space-y-3">
+    <div className="space-y-3">
       <SectionCard theme={theme} className="space-y-3 p-3">
         <SectionHeader eyebrow={copy.settings.title} title={text.settingsTitle} compact />
 
@@ -63,10 +62,7 @@ export default function SettingsPanel({ copy, store, theme, softPanelStyle, text
             className="rounded-[16px] border px-3 py-2.5"
             style={{ backgroundColor: theme.surfaceSoft, borderColor: theme.border }}
           >
-            <p className="mc-settings-label text-sm font-semibold opacity-80">
-              {isAndroidDesign() ? <Languages size={22} aria-hidden="true" /> : null}
-              {copy.settings.language}
-            </p>
+            <p className="text-sm font-semibold opacity-80">{copy.settings.language}</p>
             <div
               className="mt-1.5 rounded-[16px] border p-1"
               style={{ borderColor: theme.border, backgroundColor: theme.surface }}
@@ -110,10 +106,7 @@ export default function SettingsPanel({ copy, store, theme, softPanelStyle, text
               aria-expanded={isCurrencyOpen}
               className="flex w-full flex-col items-stretch gap-1.5 text-left min-[420px]:flex-row min-[420px]:items-center min-[420px]:justify-between"
             >
-              <span className="mc-settings-label shrink-0 text-sm font-semibold opacity-80">
-                {isAndroidDesign() ? <Coins size={22} aria-hidden="true" /> : null}
-                {currencyLabel}
-              </span>
+              <span className="shrink-0 text-sm font-semibold opacity-80">{currencyLabel}</span>
               <span className="flex min-w-0 items-center justify-between gap-2 min-[420px]:justify-end">
                 <span className="min-w-0 break-words text-sm font-bold opacity-70">{activeCurrency?.label}</span>
                 <span className="shrink-0 text-sm font-semibold " style={{ color: theme.accent }}>
@@ -157,10 +150,7 @@ export default function SettingsPanel({ copy, store, theme, softPanelStyle, text
               aria-expanded={isBackupOpen}
               className="flex w-full items-center justify-between gap-3 text-left"
             >
-              <span className="mc-settings-label text-sm font-semibold opacity-80">
-                {isAndroidDesign() ? <DatabaseBackup size={22} aria-hidden="true" /> : null}
-                {copy.settings.backupTitle}
-              </span>
+              <span className="text-sm font-semibold opacity-80">{copy.settings.backupTitle}</span>
               <ChevronDown size={14} className={`shrink-0 transition-transform ${isBackupOpen ? 'rotate-180' : ''}`} />
             </button>
             {isBackupOpen ? (
@@ -233,10 +223,7 @@ export default function SettingsPanel({ copy, store, theme, softPanelStyle, text
               aria-expanded={isSecurityOpen}
               className="flex w-full items-center justify-between gap-3 text-left"
             >
-              <span className="mc-settings-label text-sm font-semibold opacity-80">
-                {isAndroidDesign() ? <ShieldCheck size={22} aria-hidden="true" /> : null}
-                {text.securityTitle}
-              </span>
+              <span className="text-sm font-semibold opacity-80">{text.securityTitle}</span>
               <span className="flex items-center gap-2">
                 <span className="text-sm font-semibold opacity-80">
                   {pinEnabled ? copy.settings.enabled : copy.settings.disabled}
@@ -410,7 +397,6 @@ export default function SettingsPanel({ copy, store, theme, softPanelStyle, text
 
       <SectionCard theme={theme} tone="destructive" className="space-y-2 p-3">
         <p className="text-sm font-semibold text-[var(--mc-negative)]">{text.startBaseTitle}</p>
-        <p className="text-xs leading-[1.45] opacity-65">{text.startBaseDescription}</p>
 
         {!showResetConfirm ? (
           <button

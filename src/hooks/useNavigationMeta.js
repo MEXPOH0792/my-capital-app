@@ -92,7 +92,7 @@ export function useNavigationMeta({ copy, activeTab, isEnglish }) {
       goals: {
         summary: isEnglish
           ? 'Set your emergency fund and capital growth targets.'
-          : 'Задай цель финансового запаса и роста капитала.',
+          : 'Задай цели по подушке и росту капитала.',
       },
       analytics: {
         summary: isEnglish

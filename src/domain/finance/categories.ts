@@ -145,25 +145,18 @@ export const getActiveCategoryPresets = ({
 export interface AggregatedCategory {
   category: string;
   amount: number;
-  appearance?: string;
 }
 
 export const aggregateTransactionsByCategory = (
-  transactions: Pick<Transaction, 'category' | 'amount' | 'meta'>[],
+  transactions: Pick<Transaction, 'category' | 'amount'>[],
   fallbackCategory: string = 'Uncategorized',
 ): AggregatedCategory[] => {
-  const grouped = new Map<string, { amount: number; appearance?: string }>();
+  const grouped = new Map<string, number>();
 
   transactions.forEach((item) => {
     const category = toSafeText(item.category, fallbackCategory);
-    const current = grouped.get(category);
-    grouped.set(category, {
-      amount: (current?.amount ?? 0) + Number(item.amount ?? 0),
-      appearance: current?.appearance || item.meta?.categoryAppearance,
-    });
+    grouped.set(category, (grouped.get(category) ?? 0) + Number(item.amount ?? 0));
   });
 
-  return [...grouped.entries()]
-    .map(([category, value]) => ({ category, amount: value.amount, ...(value.appearance ? { appearance: value.appearance } : {}) }))
-    .sort((a, b) => b.amount - a.amount);
+  return [...grouped.entries()].map(([category, amount]) => ({ category, amount })).sort((a, b) => b.amount - a.amount);
 };

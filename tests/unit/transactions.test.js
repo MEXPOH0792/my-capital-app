@@ -5,7 +5,6 @@ import {
   rollbackTransactionState,
   syncMonthlyCoverage,
 } from '../../src/store/stateHelpers.js';
-import { getTodayReportedExpense } from '../../src/domain/history.js';
 
 addTest('rollbackTransactionState reverts account, debt and coverage effects', () => {
   const monthKey = syncMonthlyCoverage().monthKey;
@@ -67,28 +66,4 @@ addTest('transaction account relations use meta only and do not guess by categor
 
   assert.deepEqual(getTransactionRelatedAccountIds(transfer), ['card', 'cash']);
   assert.deepEqual(getTransactionRelatedAccountIds(legacyLookingTransaction), []);
-});
-
-addTest('today widget expense counts only real expenses from the local day', () => {
-  const now = new Date(2026, 10, 5, 12, 0, 0).getTime();
-  const transactions = [
-    { type: 'expense', amount: 45000, date: new Date(2026, 10, 5, 9, 0, 0).toISOString(), meta: {} },
-    {
-      type: 'expense',
-      amount: 5000,
-      date: new Date(2026, 10, 5, 10, 0, 0).toISOString(),
-      meta: { debtKind: 'payment' },
-    },
-    {
-      type: 'expense',
-      amount: 9000,
-      date: new Date(2026, 10, 5, 10, 30, 0).toISOString(),
-      meta: { system: 'reserve' },
-    },
-    { type: 'expense', amount: 7000, date: new Date(2026, 10, 5, 11, 0, 0).toISOString(), meta: { debtKind: 'lent' } },
-    { type: 'expense', amount: 12000, date: new Date(2026, 10, 4, 23, 0, 0).toISOString(), meta: {} },
-    { type: 'income', amount: 100000, date: new Date(2026, 10, 5, 8, 0, 0).toISOString(), meta: {} },
-  ];
-
-  assert.equal(getTodayReportedExpense(transactions, now), 50000);
 });

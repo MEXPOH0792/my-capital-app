@@ -113,31 +113,8 @@ addTest('legacy primary account name migrates from card to main account label', 
 
   assert.equal(sanitized.storageSetup.liquidPrimaryName, 'Основной счёт');
   assert.equal(sanitized.accounts.find((item) => item.systemKey === 'liquidPrimary')?.name, 'Основной счёт');
-  assert.equal(sanitized.storageSetup.safetyName, 'Финансовый запас');
-  assert.equal(sanitized.accounts.find((item) => item.systemKey === 'safety')?.name, 'Финансовый запас');
   assert.equal(sanitized.availableBalance, 1000000);
   assert.equal(sanitized.totalSadakaPaid, 5000);
-});
-
-addTest('custom safety account name survives terminology migration', () => {
-  const sanitized = sanitizeImportedState({
-    moneyVersion: MONEY_VERSION,
-    language: 'ru',
-    storageSetup: { safetyName: 'Мой резерв' },
-    accounts: [
-      {
-        id: 'safety-custom',
-        name: 'Мой резерв',
-        balance: 150000,
-        includeInSpendable: false,
-        isSystem: true,
-        systemKey: 'safety',
-      },
-    ],
-  });
-
-  assert.equal(sanitized.storageSetup.safetyName, 'Мой резерв');
-  assert.equal(sanitized.accounts.find((item) => item.systemKey === 'safety')?.name, 'Мой резерв');
 });
 
 addTest('legacy card and cash accounts collapse into one main account', () => {

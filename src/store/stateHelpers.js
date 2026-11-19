@@ -11,7 +11,6 @@ export {
   syncMonthlyCoverage,
   createId,
   persistStorage,
-  discardPendingPersistWrites,
 } from './state/core.js';
 
 export {

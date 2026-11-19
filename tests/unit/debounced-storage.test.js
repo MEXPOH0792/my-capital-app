@@ -15,7 +15,6 @@ const createMemoryStorage = () => {
 const KEY = 'capital-tree-pro-v9';
 const RICH_A = JSON.stringify({ state: { availableBalance: 1000, accounts: [{ id: 'a' }] } });
 const RICH_B = JSON.stringify({ state: { availableBalance: 2000, accounts: [{ id: 'a' }, { id: 'b' }] } });
-const RICH_C = JSON.stringify({ state: { availableBalance: 3000, accounts: [{ id: 'c' }] } });
 
 addTest('debounced storage flushes the latest buffered value', () => {
   const backing = createMemoryStorage();
@@ -90,76 +89,4 @@ addTest('debounced storage keeps backup intact after a removeItem', () => {
   // Backup preserved so an accidental clear can be recovered.
   assert.equal(backing.getItem(`${KEY}__bak`), RICH_A);
   assert.equal(storage.getItem(KEY), RICH_A);
-});
-
-addTest('discardPending prevents an old buffered value from returning after a full erase', () => {
-  const backing = createMemoryStorage();
-  const storage = createDebouncedStorage(backing, 300);
-
-  storage.setItem(KEY, RICH_A);
-  storage.discardPending();
-  storage.flush();
-
-  assert.equal(backing.getItem(KEY), null);
-  assert.equal(backing.getItem(`${KEY}__bak`), null);
-});
-
-addTest('a stale tab cannot overwrite a newer committed value', () => {
-  const backing = createMemoryStorage();
-  backing.setItem(KEY, RICH_A);
-  const conflicts = [];
-  const olderTab = createDebouncedStorage(backing, 300, { onConflict: (detail) => conflicts.push(detail) });
-  const newerTab = createDebouncedStorage(backing, 300);
-
-  assert.equal(olderTab.getItem(KEY), RICH_A);
-  assert.equal(newerTab.getItem(KEY), RICH_A);
-  newerTab.setItem(KEY, RICH_B);
-  newerTab.flush();
-  olderTab.setItem(KEY, RICH_C);
-  olderTab.flush();
-
-  assert.equal(backing.getItem(KEY), RICH_B);
-  assert.equal(conflicts.length, 1);
-  assert.equal(conflicts[0].key, KEY);
-});
-
-addTest('a storage event discards a pending stale write before it can flush', () => {
-  const backing = createMemoryStorage();
-  backing.setItem(KEY, RICH_A);
-  const listeners = new Map();
-  const eventTarget = {
-    addEventListener: (name, listener) => listeners.set(name, listener),
-    removeEventListener: (name) => listeners.delete(name),
-  };
-  const conflicts = [];
-  const storage = createDebouncedStorage(backing, 300, {
-    eventTarget,
-    onConflict: (detail) => conflicts.push(detail),
-  });
-
-  assert.equal(storage.getItem(KEY), RICH_A);
-  storage.setItem(KEY, RICH_C);
-  backing.setItem(KEY, RICH_B);
-  listeners.get('storage')?.({ key: KEY, newValue: RICH_B });
-  storage.flush();
-
-  assert.equal(backing.getItem(KEY), RICH_B);
-  assert.equal(conflicts.length, 1);
-  storage.destroy();
-  assert.equal(listeners.has('storage'), false);
-});
-
-addTest('sequential writes from the same tab do not create a false conflict', () => {
-  const backing = createMemoryStorage();
-  const conflicts = [];
-  const storage = createDebouncedStorage(backing, 300, { onConflict: (detail) => conflicts.push(detail) });
-
-  storage.getItem(KEY);
-  storage.setItem(KEY, RICH_A);
-  storage.flush();
-  storage.setItem(KEY, RICH_B);
-  storage.flush();
-
-  assert.equal(backing.getItem(KEY), RICH_B);
-  assert.equal(conflicts.length, 0);
 });

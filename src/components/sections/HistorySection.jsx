@@ -5,8 +5,6 @@ import { EmptyState } from '../ui/AppUi.jsx';
 import { useWindowedHistoryList } from '../../hooks/history/useWindowedHistoryList.js';
 import { useSwipeAction } from '../../hooks/useSwipeAction.js';
 import { hapticMedium } from '../../utils/haptics.js';
-import { isAndroidDesign } from '../../app/platformDesign.js';
-import CategoryIcon from '../ui/CategoryIcon.jsx';
 
 const HistoryRow = memo(function HistoryRow({
   item,
@@ -58,42 +56,6 @@ const HistoryRow = memo(function HistoryRow({
   };
 
   const actionColor = primaryAction?.kind === 'reverse' ? '#42B741' : '#ef4444';
-
-  if (isAndroidDesign()) {
-    return (
-      <div className="mc-history-swipe" {...swipe.bind}>
-        {primaryAction ? (
-          <div className="mc-history-swipe-action" aria-hidden="true">
-            {primaryAction.label}
-          </div>
-        ) : null}
-        <div className="mc-history-row" style={{ transform: `translateX(${swipe.offset}px)` }}>
-          <button type="button" className="mc-history-open" onClick={handleClick}>
-            <CategoryIcon category={item.category} type={item.type} appearance={item.meta?.categoryAppearance} />
-            <span className="mc-history-copy">
-              <span className="mc-history-category">{item.category}</span>
-              <span className="mc-history-meta">
-                {new Date(item.date).toLocaleDateString(locale)}
-                {item.meta?.accountName && !isTransfer ? ` · ${item.meta.accountName}` : ''}
-                {item.meta?.fromAccountName && item.meta?.toAccountName
-                  ? ` · ${item.meta.fromAccountName} → ${item.meta.toAccountName}`
-                  : ''}
-              </span>
-            </span>
-            <span className={`mc-history-amount${isIncome ? ' mc-history-amount--income' : ''}`}>
-              {amountPrefix}
-              {fmt(item.amount)}
-            </span>
-          </button>
-          {canDelete ? (
-            <button type="button" className="mc-history-delete" onClick={() => onDelete(item)} aria-label={deleteLabel}>
-              <Trash2 size={18} aria-hidden="true" />
-            </button>
-          ) : null}
-        </div>
-      </div>
-    );
-  }
 
   return (
     <div className="relative overflow-hidden rounded-[12px]" {...swipe.bind}>
@@ -243,14 +205,13 @@ function HistorySection({
       </div>
 
       <div className="space-y-1">
-        <div className="grid grid-cols-4 gap-1" role="group" aria-label={isEnglish ? 'Transaction type' : 'Тип записи'}>
+        <div className="flex flex-wrap gap-1">
           {historyFilterItems.map((item) => (
             <button
               key={item.key}
               type="button"
               onClick={() => setHistoryFilter(item.key)}
-              aria-pressed={historyFilter === item.key}
-              className={`min-w-0 min-h-[48px] rounded-[12px] border px-1 py-2 text-xs font-semibold ${
+              className={`rounded-full border px-2 py-1 text-[10px] font-semibold transition-all ${
                 historyFilter === item.key
                   ? 'border-emerald-500 bg-emerald-500/12 text-[var(--mc-positive)]'
                   : 'border-transparent bg-[var(--mc-soft)] opacity-70'

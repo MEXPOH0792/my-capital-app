@@ -13,27 +13,6 @@ export const DEBT_KINDS = new Set(['created', 'lent', 'repaid_to_me', 'payment']
 
 /** Records the app writes itself: the reserve for required bills and the sadaka share. */
 export const SYSTEM_KINDS = new Set(['reserve', 'sadaka']);
-const CATEGORY_APPEARANCES = new Set([
-  'groceries',
-  'cafe',
-  'transport',
-  'home',
-  'utilities',
-  'health',
-  'education',
-  'shopping',
-  'charity',
-  'mobile',
-  'leisure',
-  'kids',
-  'gift',
-  'salary',
-  'business',
-  'interest',
-  'sale',
-  'income',
-  'other',
-]);
 
 const sanitizeTransactionMeta = (type, meta, isMinorState = false) => {
   if (!meta || typeof meta !== 'object') return null;
@@ -50,7 +29,6 @@ const sanitizeTransactionMeta = (type, meta, isMinorState = false) => {
   if (meta.distributed === true) next.distributed = true;
   if (DEBT_KINDS.has(meta.debtKind)) next.debtKind = meta.debtKind;
   if (SYSTEM_KINDS.has(meta.system)) next.system = meta.system;
-  if (CATEGORY_APPEARANCES.has(meta.categoryAppearance)) next.categoryAppearance = meta.categoryAppearance;
   if (meta.sadakaPaidDelta !== undefined) {
     const sadakaPaidDelta = toImportedSignedMinorAmount(meta.sadakaPaidDelta, isMinorState);
     if (sadakaPaidDelta !== 0) next.sadakaPaidDelta = sadakaPaidDelta;

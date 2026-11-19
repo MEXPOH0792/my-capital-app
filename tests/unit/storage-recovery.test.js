@@ -2,14 +2,6 @@ import assert from 'node:assert/strict';
 import { addTest } from '../harness/runner.js';
 import { shouldRemindBackup } from '../../src/domain/backup.js';
 import {
-  APP_STATE_STORAGE_KEY,
-  BACKUP_SECRET_STORAGE_KEY,
-  BIOMETRIC_OPT_IN_STORAGE_KEY,
-  DIAGNOSTIC_ERRORS_STORAGE_KEY,
-  FAMILY_SENDER_ID_STORAGE_KEY,
-  PIN_ATTEMPTS_STORAGE_KEY,
-  PIN_STORAGE_KEY,
-  clearAllAppData,
   getSecureStorageStatus,
   resumeSecureWrites,
   securePersistStorage,
@@ -71,42 +63,6 @@ addTest('suspended writes leave saved data untouched until resumed', () => {
   removeBridge();
 });
 
-addTest('full erase delegates native secrets and clears every browser-side app key', () => {
-  let nativeEraseCalls = 0;
-  window.SystemUiBridge = {
-    secureStorageClearAppData: () => {
-      nativeEraseCalls += 1;
-      return 'ok';
-    },
-  };
-  const ownedKeys = [
-    APP_STATE_STORAGE_KEY,
-    `${APP_STATE_STORAGE_KEY}__bak`,
-    PIN_STORAGE_KEY,
-    BACKUP_SECRET_STORAGE_KEY,
-    PIN_ATTEMPTS_STORAGE_KEY,
-    FAMILY_SENDER_ID_STORAGE_KEY,
-    BIOMETRIC_OPT_IN_STORAGE_KEY,
-    DIAGNOSTIC_ERRORS_STORAGE_KEY,
-  ];
-  ownedKeys.forEach((key) => localStorage.setItem(key, 'sensitive'));
-  localStorage.setItem('other-app:key', 'keep');
-
-  clearAllAppData();
-
-  assert.equal(nativeEraseCalls, 1);
-  ownedKeys.forEach((key) => assert.equal(localStorage.getItem(key), null));
-  assert.equal(localStorage.getItem('other-app:key'), 'keep');
-  localStorage.removeItem('other-app:key');
-  removeBridge();
-});
-
-addTest('full erase refuses to claim success on an older Android bridge', () => {
-  window.SystemUiBridge = { secureStorageGetItem: () => null };
-  assert.throws(() => clearAllAppData(), /full_erase_unavailable/);
-  removeBridge();
-});
-
 addTest('backup reminder shows after two weeks once there is real history', () => {
   const now = Date.parse('2026-09-22T12:00:00Z');
   assert.equal(shouldRemindBackup(null, 5, now), false);
@@ -123,7 +79,6 @@ addTest('the widget mirror masks money when amounts are hidden', async () => {
   syncWidgetMirror({
     availableBalance: 123456,
     capital: 50000,
-    todayExpense: 2500,
     targetCapital: 100000,
     currency: 'RUB',
     language: 'ru',
@@ -134,30 +89,5 @@ addTest('the widget mirror masks money when amounts are hidden', async () => {
   assert.equal(written.get('capital_value'), '••••');
   assert.equal(written.get('currency_minor'), '');
   assert.equal(written.get('progress_percent'), '50');
-  assert.equal(written.get('today_expense_minor'), '2500');
-  assert.equal(written.get('show_amounts'), 'false');
-  removeBridge();
-});
-
-addTest('storage recovery masks stale widget money and resets progress', async () => {
-  const { syncWidgetRecoveryMirror } = await import('../../src/utils/widgetMirror.js');
-  const written = new Map();
-  let redraws = 0;
-  window.SystemUiBridge = {
-    widgetSetValue: (key, value) => written.set(key, value),
-    widgetUpdate: () => {
-      redraws += 1;
-    },
-  };
-
-  syncWidgetRecoveryMirror('ru', true);
-
-  assert.equal(written.get('available_value'), '••••');
-  assert.equal(written.get('capital_value'), '••••');
-  assert.equal(written.get('target_value'), '••••');
-  assert.equal(written.get('progress_text'), '0%');
-  assert.equal(written.get('progress_percent'), '0');
-  assert.equal(written.get('currency_minor'), '');
-  assert.equal(redraws, 1);
   removeBridge();
 });

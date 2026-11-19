@@ -31,8 +31,7 @@ export function SectionCard({ theme, className = '', soft = false, tone = 'defau
 
   return (
     <div
-      className={`mc-section-card min-w-0 w-full rounded-[22px] border ${className}`.trim()}
-      data-tone={tone}
+      className={`min-w-0 w-full rounded-[22px] border ${className}`.trim()}
       style={toneStyles[tone] || toneStyles.default}
     >
       {children}
@@ -48,7 +47,7 @@ export function SectionHeader({
   compact = false,
 }) {
   return (
-    <div className={`mc-section-heading ${compact ? 'space-y-1' : 'space-y-1.5'}`}>
+    <div className={compact ? 'space-y-1' : 'space-y-1.5'}>
       {eyebrow && eyebrow !== title ? <p className={`text-sm font-semibold ${accentColor}`}>{eyebrow}</p> : null}
       {title ? (
         <p
@@ -87,13 +86,11 @@ export function MetricCard({ label, value, hint, theme, className = '', compact 
   );
 }
 
-export function EmptyState({ text, hint, compact = false }) {
+export function EmptyState({ text, hint }) {
   return (
     // Theme tokens rather than a fixed slate wash: the hardcoded values were
     // tuned for the dark surface and all but vanished on white.
-    <div
-      className={`rounded-[16px] border border-[var(--mc-border-soft)] bg-[var(--mc-soft-faint)] text-center ${compact ? 'px-3 py-3' : 'px-4 py-5'}`}
-    >
+    <div className="rounded-[16px] border border-[var(--mc-border-soft)] bg-[var(--mc-soft-faint)] px-4 py-5 text-center">
       {/* The message leads and the hint supports it. These were inverted: the
           hint was both larger and brighter than the thing it explained. */}
       <p className="text-sm font-semibold leading-[1.35] opacity-70">{text}</p>

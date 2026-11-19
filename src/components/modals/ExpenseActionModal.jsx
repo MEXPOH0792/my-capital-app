@@ -6,7 +6,6 @@ import {
   SubmitButton,
 } from './TransactionModalShared.jsx';
 import LimitWarning from './LimitWarning.jsx';
-import VoiceExpenseControl, { VoiceExpenseStatus } from './VoiceExpenseControl.jsx';
 
 export default function ExpenseActionModal(props) {
   const {
@@ -31,24 +30,11 @@ export default function ExpenseActionModal(props) {
     limitForecast,
     handleAction,
     canSubmitAction,
-    voiceExpense,
-    startVoiceExpense,
-    store,
   } = props;
 
   return (
     <div className="space-y-3">
-      <div className="mc-modal-heading-row">
-        <ModalTitle copy={copy} modal={modal} />
-        {modal === 'expense' ? (
-          <VoiceExpenseControl
-            voiceExpense={voiceExpense}
-            startVoiceExpense={startVoiceExpense}
-            isEnglish={isEnglish}
-          />
-        ) : null}
-      </div>
-      <VoiceExpenseStatus voiceExpense={voiceExpense} isEnglish={isEnglish} />
+      <ModalTitle copy={copy} modal={modal} />
       <AmountInput inputValue={inputValue} setInputValue={setInputValue} formatInput={formatInput} />
       <CategorySection
         modal={modal}
@@ -58,7 +44,6 @@ export default function ExpenseActionModal(props) {
         setTransactionCategoryForm={setTransactionCategoryForm}
         removeExpensePreset={removeExpensePreset}
         softPanelStyle={softPanelStyle}
-        transactions={store.transactions}
       />
       <SpendAccountSection
         isEnglish={isEnglish}

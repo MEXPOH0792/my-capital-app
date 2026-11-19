@@ -22,14 +22,10 @@
 import { APP_VERSION } from '../app/appVersion.js';
 import { MONEY_VERSION } from './money.js';
 import { isBiometricBridgeAvailable, getBiometricStatus } from './biometric.js';
-import {
-  BIOMETRIC_OPT_IN_STORAGE_KEY,
-  DIAGNOSTIC_ERRORS_STORAGE_KEY,
-  getSecureStorageStatus,
-} from './secureBridgeStorage.js';
+import { getSecureStorageStatus } from './secureBridgeStorage.js';
 import { readPerfMetrics } from './perfMarks.js';
 
-export const ERROR_BUFFER_STORAGE_KEY = DIAGNOSTIC_ERRORS_STORAGE_KEY;
+export const ERROR_BUFFER_STORAGE_KEY = 'capital-tree-pro-v9:diagnostic-errors';
 const MAX_BUFFERED_ERRORS = 10;
 
 export interface BufferedError {
@@ -255,6 +251,8 @@ const getTimezone = (): string => {
   }
 };
 
+const BIOMETRIC_OPT_IN_KEY = 'capital-tree-pro-v9:biometric-enabled';
+
 export interface DiagnosticsSnapshot {
   generatedAt: string;
   appVersion: string;
@@ -286,7 +284,7 @@ export interface DiagnosticsSnapshot {
  */
 export const buildDiagnosticsSnapshot = (state: StateLike): DiagnosticsSnapshot => {
   const biometricEnabledLocal =
-    typeof localStorage !== 'undefined' && localStorage.getItem(BIOMETRIC_OPT_IN_STORAGE_KEY) === '1';
+    typeof localStorage !== 'undefined' && localStorage.getItem(BIOMETRIC_OPT_IN_KEY) === '1';
 
   const language: 'ru' | 'en' | 'unknown' =
     state.language === 'ru' || state.language === 'en' ? state.language : 'unknown';

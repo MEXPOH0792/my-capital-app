@@ -9,13 +9,10 @@ export const getDefaultStorageSetup = (language = 'ru') => ({
   liquidSecondaryName: '',
   liquidPrimaryPercent: 100,
   liquidSecondaryPercent: 0,
-  safetyName: language === 'en' ? 'Emergency fund' : 'Финансовый запас',
+  safetyName: language === 'en' ? 'Emergency fund' : 'Копилка: подушка',
   capitalName: language === 'en' ? 'Capital bucket' : 'Копилка: капитал',
   sadakaName: language === 'en' ? 'Sadaka charity' : 'Садака',
 });
-
-export const isLegacyDefaultSafetyName = (value, language = 'ru') =>
-  language === 'ru' && toSafeText(value, '') === 'Копилка: подушка';
 
 export const normalizeAllocation = (allocation) => ({
   balance: Math.max(0, Number(allocation?.balance) || 0),
@@ -43,14 +40,13 @@ export const normalizeStorageSetup = (storageSetup, language = 'ru') => {
   const defaults = getDefaultStorageSetup(language);
   const legacyPrimaryNames = new Set(language === 'en' ? ['Card'] : ['Карта']);
   const rawPrimaryName = toSafeText(storageSetup?.liquidPrimaryName, defaults.liquidPrimaryName);
-  const rawSafetyName = toSafeText(storageSetup?.safetyName, defaults.safetyName);
 
   return {
     liquidPrimaryName: legacyPrimaryNames.has(rawPrimaryName) ? defaults.liquidPrimaryName : rawPrimaryName,
     liquidSecondaryName: '',
     liquidPrimaryPercent: 100,
     liquidSecondaryPercent: 0,
-    safetyName: isLegacyDefaultSafetyName(rawSafetyName, language) ? defaults.safetyName : rawSafetyName,
+    safetyName: toSafeText(storageSetup?.safetyName, defaults.safetyName),
     capitalName: toSafeText(storageSetup?.capitalName, defaults.capitalName),
     sadakaName: toSafeText(storageSetup?.sadakaName, defaults.sadakaName),
   };
@@ -80,20 +76,7 @@ export const createId = () => {
 // sequences (e.g. typing in a form) coalesce into a single encrypted write
 // after 300ms of quiet, instead of one write per keystroke. The wrapper
 // installs a pagehide/beforeunload listener to flush before the app exits.
-export const STORAGE_CONFLICT_EVENT = 'my-capital:storage-conflict';
-
-const notifyStorageConflict = (detail) => {
-  if (typeof window === 'undefined' || typeof window.dispatchEvent !== 'function') return;
-  window.dispatchEvent(new window.CustomEvent(STORAGE_CONFLICT_EVENT, { detail }));
-};
-
-const persistStorageController = createDebouncedStorage(securePersistStorage, 300, {
-  eventTarget: typeof window === 'undefined' ? null : window,
-  onConflict: notifyStorageConflict,
-});
-
-export const persistStorage = createJSONStorage(() => persistStorageController);
-export const discardPendingPersistWrites = () => persistStorageController.discardPending();
+export const persistStorage = createJSONStorage(() => createDebouncedStorage(securePersistStorage, 300));
 
 export const createDefaultState = () => ({
   isDarkMode: true,
